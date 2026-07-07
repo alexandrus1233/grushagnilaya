@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор Актів та Рахунків (Firebase)</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .interface-wrapper {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .sidebar {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 320px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar h3 { 
+            margin-top: 0; 
+            margin-bottom: 5px; 
+            font-size: 16px; 
+        }
+        .connection-status {
+            font-size: 11px;
+            color: #4CAF50;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0; 
+            padding-bottom: 10px;
+        }
+        .btn-new {
+            background-color: #333;
+            color: #fff;
+            font-size: 14px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-new:hover { background-color: #555; }
+
+        .saved-list {
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        .saved-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            background: #f9f9f9;
+            transition: background 0.2s;
+        }
+        .saved-item:hover { background: #eef5fc; border-color: #b6d4fe; }
+        .saved-item.active { background: #e2f0d9; border-color: #a3cfbb; }
+        .saved-item .item-info {
+            flex-grow: 1;
+            font-size: 13px;
+            line-height: 1.4;
+            padding-right: 10px;
+        }
+        .saved-item .item-title { font-weight: bold; color: #111; }
+        .saved-item .item-trip { color: #008CBA; font-size: 12px; font-weight: bold; margin-bottom: 2px;}
+        .saved-item .item-route { font-size: 11px; color: #666; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+        
+        .btn-delete-item {
+            background: none;
+            border: none;
+            color: #f44336;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 5px;
+        }
+        .btn-delete-item:hover { color: #d32f2f; transform: scale(1.1); }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .controls {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        .controls h2 { margin-top: 0; margin-bottom: 20px;}
+        
+        .carrier-select-wrapper {
+            margin-bottom: 25px;
+            background: #eef5fc;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 5px solid #008CBA;
+        }
+        .carrier-select-wrapper label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        select#carrier_select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        .route-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        .route-row input { flex-grow: 1; }
+        .btn-remove {
+            background-color: #f44336;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: auto; 
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+        .btn-remove:hover { background-color: #d32f2f; }
+        
+        .full-width { grid-column: span 2; }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover { background-color: #45a049; }
+        
+        .btn-add {
+            background-color: #008CBA;
+            font-size: 14px;
+            padding: 8px 12px;
+            width: auto;
+            margin-top: 5px;
+        }
+        .btn-add:hover { background-color: #007B9E; }
+        
+        .btn-save {
+            background-color: #008CBA;
+            margin-top: 10px;
+        }
+        .btn-save:hover { background-color: #007B9E; }
+
+        .document {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            margin-bottom: 20px;
+            padding: 15mm 20mm;
+            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14px;
+            line-height: 1.3;
+        }
+        
+        .doc-header { text-align: center; font-weight: bold; margin-bottom: 20px; }
+        .preamble { text-align: justify; margin-bottom: 15px; text-indent: 1.5cm; }
+        .doc-meta { margin-bottom: 15px; padding-left: 2cm;}
+        
+        .invoice-header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 30px; margin-top: 40px;}
+        .invoice-details {
+            display: grid;
+            grid-template-columns: 110px 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        table, th, td { border: 1px solid black; }
+        th { background-color: #bfbfbf; padding: 5px; font-weight: normal; }
+        td { padding: 5px; }
+        .text-left { text-align: left; }
+        
+        .totals { text-align: right; margin-bottom: 20px; line-height: 1.5; }
+        
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .sign-block { width: 45%; }
+        .sign-title { font-weight: bold; margin-bottom: 10px; }
+        hr { border-top: 1px solid black; border-bottom: none; margin-bottom: 5px; margin-top: 5px;}
+        
+        .invoice-signature {
+            text-align: center;
+            margin-top: 50px;
+            font-weight: bold;
+        }
+
+        .page-break { page-break-before: always; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .sidebar { display: none; }
+            .controls { display: none; }
+            .interface-wrapper { display: block; }
+            .main-content { display: block; align-items: flex-start; }
+            .document { box-shadow: none; margin: 0; padding: 10mm; width: 100%; min-height: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <datalist id="route_suggestions"></datalist>
+
+    <div class="interface-wrapper">
+        <div class="sidebar">
+            <h3>Архів рейсів</h3>
+            <div class="connection-status" id="fb_status">⏳ Підключення до хмари...</div>
+            <button type="button" class="btn-new" onclick="createNewRecord()">➕ Новий рейс</button>
+            <div class="saved-list" id="saved_list_container"></div>
+        </div>
+
+        <div class="main-content">
+            <div class="controls">
+                <h2>Введіть дані рейсу</h2>
+
+                <div class="carrier-select-wrapper">
+                    <label>ВІД КОГО СТВОРЮЄМО ДОКУМЕНТИ (Перевізник):</label>
+                    <select id="carrier_select" onchange="changeCarrier()">
+                        <option value="gurzhii">Гуржій Віталій Васильович</option>
+                        <option value="fedorov">Федоров Станіслав Анатолійович</option>
+                        <option value="muzhanovskyi">Мужановський Валентин Леонгінович</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <div>
+                        <label>Номер акту та рахунку</label>
+                        <input type="text" id="doc_num" value="" oninput="updateDoc()">
+                    </div>
+                    <div>
+                        <label>Дата (оберіть з календаря)</label>
+                        <input type="date" id="doc_date" value="" oninput="updateDoc()" onchange="updateDoc()">
+                    </div>
+                    
+                    <div class="full-width">
+                        <label>Номер рейсу (тільки для архіву, в акт не йде)</label>
+                        <input type="text" id="trip_num" value="" placeholder="напр. TE-441362">
+                    </div>
+                    
+                    <div class="full-width">
+                        <label>Маршрут (точки доставки)</label>
+                        <div id="route_inputs">
+                            <div class="route-row">
+                                <input type="text" class="route-point" list="route_suggestions" value="" oninput="updateDoc()" placeholder="Точка 1">
+                                <button type="button" class="btn-remove" onclick="removeRoutePoint(this)" title="Видалити точку">❌</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add" onclick="addRoutePoint()">+ Додати ще точку</button>
+                    </div>
+
+                    <div>
+                        <label>Кілометраж (км)</label>
+                        <input type="number" id="km" value="" oninput="updateDoc()">
+                    </div>
+                    <div>
+                        <label>Ціна без ПДВ за 1 км (грн)</label>
+                        <input type="number" id="price" value="" step="0.01" oninput="updateDoc()">
+                    </div>
+                    
+                    <div class="full-width">
+                        <label>Сума прописом</label>
+                        <input type="text" id="sum_words" value="" oninput="updateDocManualWords()">
+                    </div>
+                </div>
+                
+                <button onclick="window.print()">🖨️ Роздрукувати (Акт 1 + Акт 2 + Рахунок)</button>
+                <button onclick="saveCurrentRecord()" class="btn-save">💾 Зберегти у хмару Firebase</button>
+            </div>
+
+            <div class="document">
+                <div class="doc-header">
+                    АКТ надання послуг № <span class="val-doc-num"></span> від <span class="val-doc-date"></span>
+                </div>
+                <div class="preamble">
+                    Ми, що нижче підписалися, представник Замовника Товариство з обмеженою відповідальністю "Фірма Ерідон", в особі директора Копаниці Ігоря Олеговича, з одного боку, і представник "Виконавця" <span class="val-carrier-fullname"></span>, з іншого боку, склали цей акт про те, що на підставі наведених документів:
+                </div>
+                <div class="doc-meta">
+                    Рахунок № <span class="val-doc-num"></span> від <span class="val-doc-date"></span><br>
+                    <span class="val-contract"></span><br>
+                    <span class="val-car"></span>
+                </div>
+                <div>Виконавцем були виконані наступні послуги (надані такі послуги):</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">№</th>
+                            <th style="width: 55%;">Найменування робіт, послуг</th>
+                            <th style="width: 5%;">од.</th>
+                            <th style="width: 10%;">кіл-ть</th>
+                            <th style="width: 10%;">Ціна без<br>ПДВ<br>(грн.)</th>
+                            <th style="width: 15%;">Сума без<br>ПДВ<br>(грн.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td class="text-left">Транспортні послуги по маршруту: <span class="val-route"></span></td>
+                            <td>км</td>
+                            <td><span class="val-km"></span></td>
+                            <td><span class="val-price"></span></td>
+                            <td><span class="val-sum"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="totals">Разом <span class="val-sum"></span><br>Сума ПДВ 0,00<br>Усього з ПДВ <span class="val-sum"></span></div>
+                <div style="margin-bottom: 10px;">Загальна вартість робіт (послуг) склала <span class="val-sum-words"></span> без ПДВ</div>
+                <div style="margin-bottom: 30px;">Замовник претензій по об'єму, якості та строкам виконання робіт (надання послуг) не має</div>
+                
+                <div class="signatures">
+                    <div class="sign-block">
+                        <div>Від виконавця</div>
+                        <hr>
+                        <div class="sign-title val-carrier-shortname"></div>
+                        <div class="val-carrier-req-act"></div>
+                    </div>
+                    
+                    <div class="sign-block">
+                        <div>Від замовника</div>
+                        <hr>
+                        <div class="sign-title">Копаниця І.О.</div>
+                        <div>
+                            Товариство з обмеженою відповідальністю<br>
+                            "ФІРМА ЕРІДОН", місцезнаходження: 08467<br>
+                            Київська область, Переяслав-Хмельницький район,<br>
+                            с. Чопилки, вул. Богдана Хмельницького, 35, Код<br>
+                            ЄДРПОУ 43106699 Р/Р<br>
+                            UA603003350000000260082211692 в АТ<br>
+                            "Райффайзен Банк Аваль" м. Києва, МФО 300335,<br>
+                            Індивідуальний податковий № 431066910170 є<br>
+                            платником ПДВ.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="document page-break">
+                <div class="doc-header">
+                    АКТ надання послуг № <span class="val-doc-num"></span> від <span class="val-doc-date"></span>
+                </div>
+                <div class="preamble">
+                    Ми, що нижче підписалися, представник Замовника Товариство з обмеженою відповідальністю "Фірма Ерідон", в особі директора Копаниці Ігоря Олеговича, з одного боку, і представник "Виконавця" <span class="val-carrier-fullname"></span>, з іншого боку, склали цей акт про те, що на підставі наведених документів:
+                </div>
+                <div class="doc-meta">
+                    Рахунок № <span class="val-doc-num"></span> від <span class="val-doc-date"></span><br>
+                    <span class="val-contract"></span><br>
+                    <span class="val-car"></span>
+                </div>
+                <div>Виконавцем були виконані наступні послуги (надані такі послуги):</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">№</th>
+                            <th style="width: 55%;">Найменування робіт, послуг</th>
+                            <th style="width: 5%;">од.</th>
+                            <th style="width: 10%;">кіл-ть</th>
+                            <th style="width: 10%;">Ціна без<br>ПДВ<br>(грн.)</th>
+                            <th style="width: 15%;">Сума без<br>ПДВ<br>(грн.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td class="text-left">Транспортні послуги по маршруту: <span class="val-route"></span></td>
+                            <td>км</td>
+                            <td><span class="val-km"></span></td>
+                            <td><span class="val-price"></span></td>
+                            <td><span class="val-sum"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="totals">Разом <span class="val-sum"></span><br>Сума ПДВ 0,00<br>Усього з ПДВ <span class="val-sum"></span></div>
+                <div style="margin-bottom: 10px;">Загальна вартість робіт (послуг) склала <span class="val-sum-words"></span> без ПДВ</div>
+                <div style="margin-bottom: 30px;">Замовник претензій по об'єму, якості та строкам виконання робіт (надання послуг) не має</div>
+                
+                <div class="signatures">
+                    <div class="sign-block">
+                        <div>Від виконавця</div>
+                        <hr>
+                        <div class="sign-title val-carrier-shortname"></div>
+                        <div class="val-carrier-req-act"></div>
+                    </div>
+                    
+                    <div class="sign-block">
+                        <div>Від замовника</div>
+                        <hr>
+                        <div class="sign-title">Копаниця І.О.</div>
+                        <div>
+                            Товариство з обмеженою відповідальністю<br>
+                            "ФІРМА ЕРІДОН", місцезнаходження: 08467<br>
+                            Київська область, Переяслав-Хмельницький район,<br>
+                            с. Чопилки, вул. Богдана Хмельницького, 35, Код<br>
+                            ЄДРПОУ 43106699 Р/Р<br>
+                            UA603003350000000260082211692 в АТ<br>
+                            "Райффайзен Банк Аваль" м. Києва, МФО 300335,<br>
+                            Індивідуальний податковий № 431066910170 є<br>
+                            платником ПДВ.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="document page-break">
+                <div class="invoice-header">
+                    Рахунок №<span class="val-doc-num"></span> від <span class="val-doc-date"></span>
+                </div>
+                <div class="invoice-details">
+                    <div>Виконавець :</div>
+                    <div class="val-carrier-req-inv"></div>
+                    
+                    <div>Платник:</div>
+                    <div>
+                        Товариство з обмеженою відповідальністю “ФІРМА ЕРІДОН”, місцезнаходження: 08467<br>
+                        Київська область, Переяслав-Хмельницький район,<br>
+                        с. Чопилки, вул. Богдана Хмельницького, 35, Код ЄДРПОУ 43106699 Р/Р<br>
+                        UA603003350000000260082211692 в АТ “Райффайзен Банк Аваль” м. Києва, МФО 300335,<br>
+                        Індивідуальний податковий № 431066910170 є платником ПДВ.
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">№</th>
+                            <th style="width: 55%;">Найменування робіт, послуг</th>
+                            <th style="width: 5%;">од.</th>
+                            <th style="width: 10%;">кіл-ть</th>
+                            <th style="width: 10%;">Ціна без<br>ПДВ<br>(грн.)</th>
+                            <th style="width: 15%;">Сума без<br>ПДВ<br>(грн.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td class="text-left">Транспортні послуги по маршруту: <span class="val-route"></span></td>
+                            <td>км</td>
+                            <td><span class="val-km"></span></td>
+                            <td><span class="val-price"></span></td>
+                            <td><span class="val-sum"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="totals">Разом <span class="val-sum"></span><br>Сума ПДВ 0,00<br>Усього з ПДВ <span class="val-sum"></span></div>
+                <div style="margin-bottom: 40px;">Загальна вартість робіт (послуг) склала <span class="val-sum-words"></span> без ПДВ</div>
+                <div class="invoice-signature"><span style="display:inline-block; border-bottom: 1px solid black; width: 250px; margin-right: 10px;"></span> <span class="val-carrier-shortname"></span></div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        // --- КОНФІГУРАЦІЯ FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDKMMyRyf8ZRxW0cE-c5vN4RhGn3V_h__E",
+            authDomain: "grusha-7af5b.firebaseapp.com",
+            projectId: "grusha-7af5b",
+            storageBucket: "grusha-7af5b.firebasestorage.app",
+            messagingSenderId: "85563651562",
+            appId: "1:85563651562:web:2f2cf06be043266ca92e93"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        let allTripsFromCloud = []; // Всі документи з бази
+        let currentRecordFbId = null; // ID поточного відкритого документа у Firebase
+        let isInitialLoad = true;
+
+        // --- ДАНІ ПЕРЕВІЗНИКІВ ---
+        const carriersData = {
+            'gurzhii': {
+                fullName: 'Фізична особа підприємець Гуржій Віталій Васильович',
+                shortName: 'Гуржій Віталій Васильович',
+                contract: 'Договір № 12/01/2026/3 від 12.01.2026',
+                car: 'Автомобіль Mercedes-Benz CA6731HP',
+                reqAct: 'Фізична особа-підприємець Гуржій Віталій<br>Васильович, Адреса: 19845, Черкаська обл.,<br>Драбівський р-н, с. Білоусівка, вул.<br>Хмельницького, 28<br>Ідентифікаційний код 2596312873, р/р<br>UA273052990000026001041609871 в АТ КБ<br>«Приватбанк» м. Черкаси,<br>МФО 305299, Св-во Серія Б № 147556 є<br>платником єдиного податку',
+                reqInv: 'Фізична особа-підприємець Гуржій Віталій Васильович, Адреса: 19845, Черкаська обл.,<br>Драбівський р-н, с. Білоусівка, вул. Хмельницького, 28<br>Ідентифікаційний код 2596312873, р/р UA273052990000026001041609871 в АТ КБ<br>«Приватбанк» м. Черкаси,<br>МФО 305299, Св-во Серія Б № 147556 є платником єдиного податку'
+            },
+            'fedorov': {
+                fullName: 'Фізична особа підприємець Федоров Станіслав Анатолійович',
+                shortName: 'Федоров Станіслав Анатолійович',
+                contract: 'Договір № 12/01/2026/2 від 12.01.2025',
+                car: 'Автомобіль Mercedes-Benz CA6627IM',
+                reqAct: 'Фізична особа-підприємець Федоров Станіслав<br>Анатолійович<br>РНОКПП 2473302011,тел 0972978285 адреса:<br>Україна, 18029, Черкаська обл., місто Черкаси, вул.<br>Генерала Путейка, будинок 54, квартира 60,<br>Р/р UA693052990000026003031603788 в АТ КБ<br>"Приватбанк" МФО 305299, Свідоцтво платника<br>єдиного податку Серія Б № 160134',
+                reqInv: 'Фізична особа-підприємець Федоров Станіслав Анатолійович<br>РНОКПП 2473302011,тел 0972978285 адреса: Україна, 18029, Черкаська обл., місто Черкаси,<br>вул. Генерала Путейка, будинок 54, квартира 60,<br>Р/р UA693052990000026003031603788 в АТ КБ "Приватбанк" МФО 305299, Свідоцтво<br>платника єдиного податку Серія Б № 160134'
+            },
+            'muzhanovskyi': {
+                fullName: 'Фізична особа підприємець Мужановський Валентин Леонгінович',
+                shortName: 'Мужановський Валентин Леонгінович',
+                contract: 'Договір № 15/01/2026 від 15.01.2026',
+                car: 'Автомобіль Renault Premium 420 CA6250IH',
+                reqAct: 'Фізична особа-підприємець Мужановський<br>Валентин Леонгінович Адреса: 18000, Черкаська<br>обл., м. Черкаси, вул. Руставі, буд. 11, кв. 64,<br>ЄДРПОУ 2878206950, IBAN<br>UA533220010000026005320051438 АТ<br>"УНІВЕРСАЛ БАНК", Тел. 0678926170 Єдиний<br>податок',
+                reqInv: 'Фізична особа-підприємець Мужановський Валентин Леонгінович Адреса: 18000, Черкаська<br>обл., м. Черкаси, вул. Руставі, буд. 11, кв. 64, ЄДРПОУ 2878206950, IBAN<br>UA533220010000026005320051438 АТ "УНІВЕРСАЛ БАНК", Тел. 0678926170 Єдиний<br>податок'
+            }
+        };
+
+
+        // --- СИНХРОНІЗАЦІЯ З FIREBASE (REALTIME) ---
+        db.collection("trips").onSnapshot((snapshot) => {
+            document.getElementById('fb_status').innerHTML = "🟢 Синхронізовано з хмарою";
+            
+            allTripsFromCloud = [];
+            snapshot.forEach((doc) => {
+                allTripsFromCloud.push({ fbId: doc.id, ...doc.data() });
+            });
+
+            updateRouteSuggestions();
+            renderSavedList();
+
+            // Якщо це перше завантаження сторінки, відкриваємо останній акт
+            if (isInitialLoad) {
+                isInitialLoad = false;
+                const carrier = document.getElementById('carrier_select').value;
+                const carrierTrips = allTripsFromCloud.filter(t => t.carrier === carrier);
+                
+                if (carrierTrips.length === 0) {
+                    createNewRecord();
+                } else {
+                    carrierTrips.sort((a, b) => extractNumber(b.docNum) - extractNumber(a.docNum));
+                    loadRecord(carrierTrips[0].fbId);
+                }
+            }
+        }, (error) => {
+            console.error("Помилка підключення до Firebase: ", error);
+            document.getElementById('fb_status').innerHTML = "🔴 Помилка з'єднання. Перевірте правила безпеки Firestore!";
+            document.getElementById('fb_status').style.color = "red";
+        });
+
+        // --- ЛОГІКА АРХІВУ ТА ФОРМИ ---
+
+        function changeCarrier() {
+            createNewRecord(); // При зміні перевізника створюємо новий порожній бланк
+            renderSavedList(); // Оновлюємо список архіву для нового перевізника
+        }
+
+        // Збирає точки з усієї хмарної бази для автозаповнення
+        function updateRouteSuggestions() {
+            let allPoints = new Set();
+            
+            allTripsFromCloud.forEach(record => {
+                if (record.routePoints) {
+                    record.routePoints.forEach(pt => {
+                        if(pt.trim() !== "") allPoints.add(pt.trim());
+                    });
+                }
+            });
+
+            const datalist = document.getElementById('route_suggestions');
+            datalist.innerHTML = '';
+            allPoints.forEach(pt => {
+                const option = document.createElement('option');
+                option.value = pt;
+                datalist.appendChild(option);
+            });
+        }
+
+        function extractNumber(docNumStr) {
+            if (!docNumStr) return 0;
+            const match = docNumStr.match(/\d+/g);
+            return match ? parseInt(match.pop(), 10) : 0;
+        }
+
+        function generateNextNumber(lastNumStr) {
+            if (!lastNumStr) return "1";
+            const match = lastNumStr.match(/\d+($|\D*)/);
+            if (match) {
+                const numStr = lastNumStr.match(/\d+/g).pop(); 
+                const num = parseInt(numStr, 10);
+                const nextNum = num + 1;
+                const index = lastNumStr.lastIndexOf(numStr);
+                return lastNumStr.substring(0, index) + nextNum + lastNumStr.substring(index + numStr.length);
+            }
+            return lastNumStr + "-1";
+        }
+
+        function renderSavedList() {
+            const container = document.getElementById('saved_list_container');
+            container.innerHTML = '';
+            
+            const carrierKey = document.getElementById('carrier_select').value;
+            // Фільтруємо записи з хмари тільки для поточного вибраного перевізника
+            let carrierTrips = allTripsFromCloud.filter(t => t.carrier === carrierKey);
+            
+            if(carrierTrips.length === 0) {
+                container.innerHTML = '<div style="color:#888; font-size:13px; text-align:center; padding: 20px;">Архів порожній</div>';
+                return;
+            }
+
+            // Сортування від нових до старих
+            carrierTrips.sort((a, b) => {
+                return extractNumber(b.docNum) - extractNumber(a.docNum);
+            });
+
+            carrierTrips.forEach(record => {
+                const item = document.createElement('div');
+                item.className = 'saved-item' + (currentRecordFbId === record.fbId ? ' active' : '');
+                item.onclick = function() { loadRecord(record.fbId); };
+
+                const formattedSum = (record.km * record.price).toFixed(2).replace('.', ',');
+                let tripInfo = record.tripNum ? `<div class="item-trip">Рейс: ${record.tripNum}</div>` : '';
+
+                item.innerHTML = `
+                    <div class="item-info">
+                        ${tripInfo}
+                        <div class="item-title">№ ${record.docNum || 'Без номеру'} від ${formatDate(record.docDate)}</div>
+                        <div>Сума: <b>${formattedSum} грн</b> (${record.km || 0} км)</div>
+                        <span class="item-route">${(record.routePoints || []).join(' - ')}</span>
+                    </div>
+                    <button class="btn-delete-item" onclick="deleteRecord('${record.fbId}', event)" title="Видалити">❌</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function saveCurrentRecord() {
+            const docNum = document.getElementById('doc_num').value.trim();
+            const tripNum = document.getElementById('trip_num').value.trim();
+            const carrierKey = document.getElementById('carrier_select').value;
+            
+            if (!docNum) {
+                alert("Помилка! Номер акту не може бути порожнім.");
+                return;
+            }
+
+            // Перевірка на дублікат номера акту в межах цього перевізника
+            const isDuplicate = allTripsFromCloud.some(r => r.carrier === carrierKey && r.docNum === docNum && r.fbId !== currentRecordFbId);
+            if (isDuplicate) {
+                alert(`Акт з номером "${docNum}" вже існує в архіві цього перевізника! Збереження скасовано.\nБудь ласка, змініть номер.`);
+                return;
+            }
+
+            const docDate = document.getElementById('doc_date').value;
+            const km = parseFloat(document.getElementById('km').value) || 0;
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            
+            let routePoints = [];
+            document.querySelectorAll('.route-point').forEach(input => {
+                if (input.value.trim() !== "") routePoints.push(input.value.trim());
+            });
+
+            const tripData = {
+                docNum, tripNum, docDate, km, price, routePoints,
+                carrier: carrierKey,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            // Візуальний зворотний зв'язок на кнопці
+            const btn = document.querySelector('.btn-save');
+            const originalText = btn.innerText;
+            btn.innerText = "⏳ Збереження...";
+            btn.disabled = true;
+
+            if (currentRecordFbId) {
+                // Оновлення існуючого
+                db.collection("trips").doc(currentRecordFbId).update(tripData).then(() => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }).catch(err => alert("Помилка: " + err));
+            } else {
+                // Створення нового
+                tripData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                db.collection("trips").add(tripData).then(docRef => {
+                    currentRecordFbId = docRef.id;
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }).catch(err => alert("Помилка: " + err));
+            }
+            // onSnapshot автоматично оновить список зліва, тому renderSavedList() тут не викликаємо
+        }
+
+        function loadRecord(fbId) {
+            let record = allTripsFromCloud.find(r => r.fbId === fbId);
+            
+            if (record) {
+                currentRecordFbId = record.fbId;
+                document.getElementById('doc_num').value = record.docNum || "";
+                document.getElementById('trip_num').value = record.tripNum || "";
+                document.getElementById('doc_date').value = record.docDate || "";
+                document.getElementById('km').value = record.km || "";
+                document.getElementById('price').value = record.price || "";
+
+                const container = document.getElementById('route_inputs');
+                container.innerHTML = '';
+                if (record.routePoints && record.routePoints.length > 0) {
+                    record.routePoints.forEach(pt => addRoutePoint(pt));
+                } else {
+                    addRoutePoint("");
+                }
+                
+                updateDoc();
+                renderSavedList(); // Оновлюємо, щоб підсвітити активний пункт
+            }
+        }
+
+        function createNewRecord() {
+            currentRecordFbId = null;
+            const carrierKey = document.getElementById('carrier_select').value;
+            let carrierTrips = allTripsFromCloud.filter(t => t.carrier === carrierKey);
+            
+            let nextNum = "1TE"; 
+            if (carrierKey === 'gurzhii') nextNum = "84TE";
+            if (carrierKey === 'fedorov') nextNum = "53TE";
+            if (carrierKey === 'muzhanovskyi') nextNum = "12TE";
+            
+            if (carrierTrips.length > 0) {
+                let maxNumRecord = carrierTrips.reduce((prev, current) => {
+                    return (extractNumber(prev.docNum) > extractNumber(current.docNum)) ? prev : current;
+                });
+                nextNum = generateNextNumber(maxNumRecord.docNum);
+            }
+
+            document.getElementById('doc_num').value = nextNum;
+            document.getElementById('trip_num').value = "";
+            document.getElementById('doc_date').value = ""; 
+            document.getElementById('km').value = ""; 
+            document.getElementById('price').value = ""; 
+            
+            const container = document.getElementById('route_inputs');
+            container.innerHTML = '';
+            addRoutePoint(""); 
+            
+            updateDoc();
+            renderSavedList();
+        }
+
+        function deleteRecord(fbId, event) {
+            event.stopPropagation();
+            if(confirm("Ви дійсно хочете видалити цей запис із хмарного архіву назавжди?")) {
+                db.collection("trips").doc(fbId).delete().then(() => {
+                    if (currentRecordFbId === fbId) {
+                        currentRecordFbId = null;
+                        createNewRecord();
+                    }
+                }).catch(err => alert("Помилка видалення: " + err));
+            }
+        }
+
+        // --- ДОПОМІЖНІ ФУНКЦІЇ ДЛЯ РЕНДЕРУ (Точки, слова, числа) ---
+
+        function addRoutePoint(value = "") {
+            const container = document.getElementById('route_inputs');
+            const row = document.createElement('div');
+            row.className = 'route-row';
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'route-point';
+            input.setAttribute('list', 'route_suggestions');
+            input.placeholder = `Точка ${container.children.length + 1}`;
+            input.value = value;
+            input.oninput = updateDoc;
+            
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn-remove';
+            btn.title = 'Видалити точку';
+            btn.innerHTML = '❌';
+            btn.onclick = function() { removeRoutePoint(btn); };
+            
+            row.appendChild(input);
+            row.appendChild(btn);
+            container.appendChild(row);
+        }
+
+        function removeRoutePoint(button) {
+            const container = document.getElementById('route_inputs');
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+                updateDoc();
+            } else {
+                alert("Має бути хоча б одна точка маршруту!");
+            }
+        }
+
+        function setElementsText(className, text) {
+            document.querySelectorAll('.' + className).forEach(el => { el.innerText = text; });
+        }
+
+        function setElementsHTML(className, html) {
+            document.querySelectorAll('.' + className).forEach(el => { el.innerHTML = html; });
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return "";
+            const parts = dateString.split('-');
+            return parts.length === 3 ? `${parts[2]}.${parts[1]}.${parts[0]}` : dateString;
+        }
+
+        function numberToWordsUa(number, isFemaleCurrency = true) {
+            const units = ['', 'один', 'два', 'три', 'чотири', 'п\'ять', 'шість', 'сім', 'вісім', 'дев\'ять', 'десять', 'одинадцять', 'дванадцять', 'тринадцять', 'чотирнадцять', 'п\'ятнадцять', 'шістнадцять', 'сімнадцять', 'вісімнадцять', 'дев\'ятнадцять'];
+            const unitsFemale = ['', 'одна', 'дві', 'три', 'чотири', 'п\'ять', 'шість', 'сім', 'вісім', 'дев\'ять'];
+            const tens = ['', '', 'двадцять', 'тридцять', 'сорок', 'п\'ятдесят', 'шістдесят', 'сімдесят', 'вісімдесят', 'дев\'яносто'];
+            const hundreds = ['', 'сто', 'двісті', 'триста', 'чотириста', 'п\'ятсот', 'шістсот', 'сімсот', 'вісімсот', 'дев\'ятсот'];
+            if (number === 0 || isNaN(number)) return '';
+
+            function getGroupWords(num, isFemale) {
+                let words = [];
+                let h = Math.floor(num / 100); let rem = num % 100;
+                let t = Math.floor(rem / 10); let u = rem % 10;
+                if (h > 0) words.push(hundreds[h]);
+                if (rem > 0 && rem < 20) { words.push(isFemale && rem < 10 ? unitsFemale[rem] : units[rem]); }
+                else if (rem >= 20) { words.push(tens[t]); if (u > 0) words.push(isFemale ? unitsFemale[u] : units[u]); }
+                return words.join(' ');
+            }
+
+            let intPart = Math.floor(number); let result = [];
+            let m = Math.floor(intPart / 1000000);
+            if (m > 0) {
+                result.push(getGroupWords(m, false));
+                let remM = m % 10; let remM100 = m % 100;
+                if (remM100 >= 11 && remM100 <= 14) result.push('мільйонів');
+                else if (remM === 1) result.push('мільйон');
+                else if (remM >= 2 && remM <= 4) result.push('мільйони');
+                else result.push('мільйонів');
+                intPart %= 1000000;
+            }
+            let th = Math.floor(intPart / 1000);
+            if (th > 0) {
+                result.push(getGroupWords(th, true));
+                let remTh = th % 10; let remTh100 = th % 100;
+                if (remTh100 >= 11 && remTh100 <= 14) result.push('тисяч');
+                else if (remTh === 1) result.push('тисяча');
+                else if (remTh >= 2 && remTh <= 4) result.push('тисячі');
+                else result.push('тисяч');
+                intPart %= 1000;
+            }
+            if (intPart > 0 || result.length === 0) { 
+                let uWords = getGroupWords(intPart, isFemaleCurrency); 
+                if (uWords) result.push(uWords); 
+            }
+            return result.join(' ').trim();
+        }
+
+        function getUahWords(amount) {
+            if (!amount || isNaN(amount)) return "";
+            let parts = amount.toFixed(2).split('.');
+            let intPart = parseInt(parts[0], 10);
+            let centsStr = parts[1] || '00';
+            if(centsStr.length === 1) centsStr += '0';
+            
+            let words = numberToWordsUa(intPart, true); 
+            let currency = 'гривень';
+            let rem100 = intPart % 100; let rem10 = intPart % 10;
+            if (rem100 >= 11 && rem100 <= 14) currency = 'гривень';
+            else if (rem10 === 1) currency = 'гривня';
+            else if (rem10 >= 2 && rem10 <= 4) currency = 'гривні';
+            return `${words} ${currency} ${centsStr} коп.`;
+        }
+
+        function updateDocManualWords() {
+            setElementsText('val-sum-words', document.getElementById('sum_words').value);
+        }
+
+        function updateDoc() {
+            const docNum = document.getElementById('doc_num').value;
+            const docDate = formatDate(document.getElementById('doc_date').value);
+            
+            const routeInputs = document.querySelectorAll('.route-point');
+            let routePoints = [];
+            routeInputs.forEach(input => { if (input.value.trim() !== "") routePoints.push(input.value.trim()); });
+            const route = routePoints.join(' - ');
+
+            const kmText = document.getElementById('km').value;
+            const priceText = document.getElementById('price').value;
+            
+            const km = kmText ? parseFloat(kmText) : 0;
+            const price = priceText ? parseFloat(priceText) : 0;
+            const sum = km * price;
+            const sumWordsGenerated = getUahWords(sum);
+            
+            document.getElementById('sum_words').value = sumWordsGenerated;
+
+            const priceStr = priceText ? price.toFixed(2).replace('.', ',') : "";
+            const sumStr = (kmText || priceText) ? sum.toFixed(2).replace('.', ',') : "";
+
+            setElementsText('val-doc-num', docNum);
+            setElementsText('val-doc-date', docDate);
+            setElementsText('val-route', route);
+            setElementsText('val-km', kmText);
+            setElementsText('val-price', priceStr);
+            setElementsText('val-sum', sumStr);
+            setElementsText('val-sum-words', sumWordsGenerated);
+
+            const carrierKey = document.getElementById('carrier_select').value;
+            const cData = carriersData[carrierKey];
+            
+            setElementsText('val-carrier-fullname', cData.fullName);
+            setElementsText('val-carrier-shortname', cData.shortName);
+            setElementsText('val-contract', cData.contract);
+            setElementsText('val-car', cData.car);
+            
+            setElementsHTML('val-carrier-req-act', cData.reqAct);
+            setElementsHTML('val-carrier-req-inv', cData.reqInv);
+        }
+
+        // Ініціалізація інтерфейсу порожнім станом (заповниться при отриманні Snapshot)
+        updateDoc();
+        
+    </script>
+</body>
+</html>
