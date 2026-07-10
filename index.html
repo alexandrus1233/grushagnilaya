@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Генератор Актів та Рахунків (Firebase)</title>
     
+    <!-- Підключення Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 
@@ -277,6 +278,7 @@
 <body>
 
     <datalist id="route_suggestions"></datalist>
+    <datalist id="car_suggestions"></datalist>
 
     <div class="interface-wrapper">
         <div class="sidebar">
@@ -313,6 +315,11 @@
                         <label>Номер рейсу (тільки для архіву, в акт не йде)</label>
                         <input type="text" id="trip_num" value="" placeholder="напр. TE-441362">
                     </div>
+
+                    <div class="full-width">
+                        <label>Автомобіль</label>
+                        <input type="text" id="car_input" list="car_suggestions" value="" oninput="updateDoc()" placeholder="Введіть марку та номер авто (без слова Автомобіль)">
+                    </div>
                     
                     <div class="full-width">
                         <label>Маршрут (точки доставки)</label>
@@ -344,6 +351,7 @@
                 <button onclick="saveCurrentRecord()" class="btn-save">💾 Зберегти у хмару Firebase</button>
             </div>
 
+            <!-- СТОРІНКА 1: АКТ (Копія 1) -->
             <div class="document">
                 <div class="doc-header">
                     АКТ надання послуг № <span class="val-doc-num"></span> від <span class="val-doc-date"></span>
@@ -354,7 +362,7 @@
                 <div class="doc-meta">
                     Рахунок № <span class="val-doc-num"></span> від <span class="val-doc-date"></span><br>
                     <span class="val-contract"></span><br>
-                    <span class="val-car"></span>
+                    Автомобіль <span class="val-car"></span>
                 </div>
                 <div>Виконавцем були виконані наступні послуги (надані такі послуги):</div>
                 <table>
@@ -410,6 +418,7 @@
                 </div>
             </div>
 
+            <!-- СТОРІНКА 2: АКТ (Копія 2) -->
             <div class="document page-break">
                 <div class="doc-header">
                     АКТ надання послуг № <span class="val-doc-num"></span> від <span class="val-doc-date"></span>
@@ -420,7 +429,7 @@
                 <div class="doc-meta">
                     Рахунок № <span class="val-doc-num"></span> від <span class="val-doc-date"></span><br>
                     <span class="val-contract"></span><br>
-                    <span class="val-car"></span>
+                    Автомобіль <span class="val-car"></span>
                 </div>
                 <div>Виконавцем були виконані наступні послуги (надані такі послуги):</div>
                 <table>
@@ -476,6 +485,7 @@
                 </div>
             </div>
 
+            <!-- СТОРІНКА 3: РАХУНОК -->
             <div class="document page-break">
                 <div class="invoice-header">
                     Рахунок №<span class="val-doc-num"></span> від <span class="val-doc-date"></span>
@@ -547,7 +557,7 @@
                 fullName: 'Фізична особа підприємець Гуржій Віталій Васильович',
                 shortName: 'Гуржій Віталій Васильович',
                 contract: 'Договір № 12/01/2026/3 від 12.01.2026',
-                car: 'Автомобіль Mercedes-Benz CA6731HP',
+                car: 'Mercedes-Benz CA6731HP',
                 reqAct: 'Фізична особа-підприємець Гуржій Віталій<br>Васильович, Адреса: 19845, Черкаська обл.,<br>Драбівський р-н, с. Білоусівка, вул.<br>Хмельницького, 28<br>Ідентифікаційний код 2596312873, р/р<br>UA273052990000026001041609871 в АТ КБ<br>«Приватбанк» м. Черкаси,<br>МФО 305299, Св-во Серія Б № 147556 є<br>платником єдиного податку',
                 reqInv: 'Фізична особа-підприємець Гуржій Віталій Васильович, Адреса: 19845, Черкаська обл.,<br>Драбівський р-н, с. Білоусівка, вул. Хмельницького, 28<br>Ідентифікаційний код 2596312873, р/р UA273052990000026001041609871 в АТ КБ<br>«Приватбанк» м. Черкаси,<br>МФО 305299, Св-во Серія Б № 147556 є платником єдиного податку'
             },
@@ -555,7 +565,7 @@
                 fullName: 'Фізична особа підприємець Федоров Станіслав Анатолійович',
                 shortName: 'Федоров Станіслав Анатолійович',
                 contract: 'Договір № 12/01/2026/2 від 12.01.2025',
-                car: 'Автомобіль Mercedes-Benz CA6627IM',
+                car: 'Mercedes-Benz CA6627IM',
                 reqAct: 'Фізична особа-підприємець Федоров Станіслав<br>Анатолійович<br>РНОКПП 2473302011,тел 0972978285 адреса:<br>Україна, 18029, Черкаська обл., місто Черкаси, вул.<br>Генерала Путейка, будинок 54, квартира 60,<br>Р/р UA693052990000026003031603788 в АТ КБ<br>"Приватбанк" МФО 305299, Свідоцтво платника<br>єдиного податку Серія Б № 160134',
                 reqInv: 'Фізична особа-підприємець Федоров Станіслав Анатолійович<br>РНОКПП 2473302011,тел 0972978285 адреса: Україна, 18029, Черкаська обл., місто Черкаси,<br>вул. Генерала Путейка, будинок 54, квартира 60,<br>Р/р UA693052990000026003031603788 в АТ КБ "Приватбанк" МФО 305299, Свідоцтво<br>платника єдиного податку Серія Б № 160134'
             },
@@ -563,7 +573,7 @@
                 fullName: 'Фізична особа підприємець Мужановський Валентин Леонгінович',
                 shortName: 'Мужановський Валентин Леонгінович',
                 contract: 'Договір № 15/01/2026 від 15.01.2026',
-                car: 'Автомобіль Renault Premium 420 CA6250IH',
+                car: 'Renault Premium 420 CA6250IH',
                 reqAct: 'Фізична особа-підприємець Мужановський<br>Валентин Леонгінович Адреса: 18000, Черкаська<br>обл., м. Черкаси, вул. Руставі, буд. 11, кв. 64,<br>ЄДРПОУ 2878206950, IBAN<br>UA533220010000026005320051438 АТ<br>"УНІВЕРСАЛ БАНК", Тел. 0678926170 Єдиний<br>податок',
                 reqInv: 'Фізична особа-підприємець Мужановський Валентин Леонгінович Адреса: 18000, Черкаська<br>обл., м. Черкаси, вул. Руставі, буд. 11, кв. 64, ЄДРПОУ 2878206950, IBAN<br>UA533220010000026005320051438 АТ "УНІВЕРСАЛ БАНК", Тел. 0678926170 Єдиний<br>податок'
             }
@@ -579,12 +589,12 @@
             });
 
             updateRouteSuggestions();
+            updateCarSuggestions();
             renderSavedList();
 
-            // Якщо це перше завантаження сторінки, відкриваємо форму для НОВОГО акту
             if (isInitialLoad) {
                 isInitialLoad = false;
-                createNewRecord(); // ТЕПЕР ЗАВЖДИ ВІДКРИВАЄТЬСЯ НОВИЙ
+                createNewRecord(); 
             }
         }, (error) => {
             console.error("Помилка підключення до Firebase: ", error);
@@ -595,8 +605,8 @@
         // --- ЛОГІКА АРХІВУ ТА ФОРМИ ---
 
         function changeCarrier() {
-            createNewRecord(); // При зміні перевізника створюємо новий порожній бланк
-            renderSavedList(); // Оновлюємо список архіву для нового перевізника
+            createNewRecord(); 
+            renderSavedList(); 
         }
 
         function updateRouteSuggestions() {
@@ -615,6 +625,32 @@
             allPoints.forEach(pt => {
                 const option = document.createElement('option');
                 option.value = pt;
+                datalist.appendChild(option);
+            });
+        }
+
+        function updateCarSuggestions() {
+            let allCars = new Set();
+            
+            // Додаємо стандартні авто перевізників у підказки за замовчуванням
+            Object.values(carriersData).forEach(c => allCars.add(c.car));
+
+            allTripsFromCloud.forEach(record => {
+                if (record.car && record.car.trim() !== "") {
+                    let rawCar = record.car.trim();
+                    // Захист від старих збережень зі словом "Автомобіль"
+                    if (rawCar.toLowerCase().startsWith('автомобіль ')) {
+                        rawCar = rawCar.substring(11).trim();
+                    }
+                    allCars.add(rawCar);
+                }
+            });
+
+            const datalist = document.getElementById('car_suggestions');
+            datalist.innerHTML = '';
+            allCars.forEach(car => {
+                const option = document.createElement('option');
+                option.value = car;
                 datalist.appendChild(option);
             });
         }
@@ -678,8 +714,14 @@
         function saveCurrentRecord() {
             const docNum = document.getElementById('doc_num').value.trim();
             const tripNum = document.getElementById('trip_num').value.trim();
+            let car = document.getElementById('car_input').value.trim();
             const carrierKey = document.getElementById('carrier_select').value;
             
+            // Якщо випадково написали "Автомобіль", видаляємо його перед збереженням
+            if (car.toLowerCase().startsWith('автомобіль ')) {
+                car = car.substring(11).trim();
+            }
+
             if (!docNum) {
                 alert("Помилка! Номер акту не може бути порожнім.");
                 return;
@@ -701,7 +743,7 @@
             });
 
             const tripData = {
-                docNum, tripNum, docDate, km, price, routePoints,
+                docNum, tripNum, docDate, car, km, price, routePoints,
                 carrier: carrierKey,
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             };
@@ -734,6 +776,14 @@
                 document.getElementById('doc_num').value = record.docNum || "";
                 document.getElementById('trip_num').value = record.tripNum || "";
                 document.getElementById('doc_date').value = record.docDate || "";
+                
+                // Завантажуємо авто з бази, або беремо стандартне для перевізника
+                let loadedCar = record.car || carriersData[record.carrier || 'gurzhii'].car || "";
+                if (loadedCar.toLowerCase().startsWith('автомобіль ')) {
+                    loadedCar = loadedCar.substring(11).trim();
+                }
+                document.getElementById('car_input').value = loadedCar;
+                
                 document.getElementById('km').value = record.km || "";
                 document.getElementById('price').value = record.price || "";
 
@@ -770,6 +820,10 @@
             document.getElementById('doc_num').value = nextNum;
             document.getElementById('trip_num').value = "";
             document.getElementById('doc_date').value = ""; 
+            
+            // Автоматично підставляємо стандартне авто для поточного перевізника
+            document.getElementById('car_input').value = carriersData[carrierKey].car; 
+            
             document.getElementById('km').value = ""; 
             document.getElementById('price').value = ""; 
             
@@ -913,6 +967,12 @@
             const docNum = document.getElementById('doc_num').value;
             const docDate = formatDate(document.getElementById('doc_date').value);
             
+            // Беремо авто і також прибираємо слово Автомобіль, якщо раптом його ввели
+            let carText = document.getElementById('car_input').value.trim();
+            if (carText.toLowerCase().startsWith('автомобіль ')) {
+                carText = carText.substring(11).trim();
+            }
+            
             const routeInputs = document.querySelectorAll('.route-point');
             let routePoints = [];
             routeInputs.forEach(input => { if (input.value.trim() !== "") routePoints.push(input.value.trim()); });
@@ -933,6 +993,7 @@
 
             setElementsText('val-doc-num', docNum);
             setElementsText('val-doc-date', docDate);
+            setElementsText('val-car', carText); 
             setElementsText('val-route', route);
             setElementsText('val-km', kmText);
             setElementsText('val-price', priceStr);
@@ -945,7 +1006,6 @@
             setElementsText('val-carrier-fullname', cData.fullName);
             setElementsText('val-carrier-shortname', cData.shortName);
             setElementsText('val-contract', cData.contract);
-            setElementsText('val-car', cData.car);
             
             setElementsHTML('val-carrier-req-act', cData.reqAct);
             setElementsHTML('val-carrier-req-inv', cData.reqInv);
