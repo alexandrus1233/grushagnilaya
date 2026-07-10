@@ -537,8 +537,8 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         
-        let allTripsFromCloud = []; // Всі документи з бази
-        let currentRecordFbId = null; // ID поточного відкритого документа у Firebase
+        let allTripsFromCloud = []; 
+        let currentRecordFbId = null; 
         let isInitialLoad = true;
 
         // --- ДАНІ ПЕРЕВІЗНИКІВ ---
@@ -569,7 +569,6 @@
             }
         };
 
-
         // --- СИНХРОНІЗАЦІЯ З FIREBASE (REALTIME) ---
         db.collection("trips").onSnapshot((snapshot) => {
             document.getElementById('fb_status').innerHTML = "🟢 Синхронізовано з хмарою";
@@ -582,18 +581,10 @@
             updateRouteSuggestions();
             renderSavedList();
 
-            // Якщо це перше завантаження сторінки, відкриваємо останній акт
+            // Якщо це перше завантаження сторінки, відкриваємо форму для НОВОГО акту
             if (isInitialLoad) {
                 isInitialLoad = false;
-                const carrier = document.getElementById('carrier_select').value;
-                const carrierTrips = allTripsFromCloud.filter(t => t.carrier === carrier);
-                
-                if (carrierTrips.length === 0) {
-                    createNewRecord();
-                } else {
-                    carrierTrips.sort((a, b) => extractNumber(b.docNum) - extractNumber(a.docNum));
-                    loadRecord(carrierTrips[0].fbId);
-                }
+                createNewRecord(); // ТЕПЕР ЗАВЖДИ ВІДКРИВАЄТЬСЯ НОВИЙ
             }
         }, (error) => {
             console.error("Помилка підключення до Firebase: ", error);
@@ -608,7 +599,6 @@
             renderSavedList(); // Оновлюємо список архіву для нового перевізника
         }
 
-        // Збирає точки з усієї хмарної бази для автозаповнення
         function updateRouteSuggestions() {
             let allPoints = new Set();
             
@@ -653,7 +643,6 @@
             container.innerHTML = '';
             
             const carrierKey = document.getElementById('carrier_select').value;
-            // Фільтруємо записи з хмари тільки для поточного вибраного перевізника
             let carrierTrips = allTripsFromCloud.filter(t => t.carrier === carrierKey);
             
             if(carrierTrips.length === 0) {
@@ -661,7 +650,6 @@
                 return;
             }
 
-            // Сортування від нових до старих
             carrierTrips.sort((a, b) => {
                 return extractNumber(b.docNum) - extractNumber(a.docNum);
             });
@@ -697,7 +685,6 @@
                 return;
             }
 
-            // Перевірка на дублікат номера акту в межах цього перевізника
             const isDuplicate = allTripsFromCloud.some(r => r.carrier === carrierKey && r.docNum === docNum && r.fbId !== currentRecordFbId);
             if (isDuplicate) {
                 alert(`Акт з номером "${docNum}" вже існує в архіві цього перевізника! Збереження скасовано.\nБудь ласка, змініть номер.`);
@@ -719,20 +706,17 @@
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
-            // Візуальний зворотний зв'язок на кнопці
             const btn = document.querySelector('.btn-save');
             const originalText = btn.innerText;
             btn.innerText = "⏳ Збереження...";
             btn.disabled = true;
 
             if (currentRecordFbId) {
-                // Оновлення існуючого
                 db.collection("trips").doc(currentRecordFbId).update(tripData).then(() => {
                     btn.innerText = originalText;
                     btn.disabled = false;
                 }).catch(err => alert("Помилка: " + err));
             } else {
-                // Створення нового
                 tripData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                 db.collection("trips").add(tripData).then(docRef => {
                     currentRecordFbId = docRef.id;
@@ -740,7 +724,6 @@
                     btn.disabled = false;
                 }).catch(err => alert("Помилка: " + err));
             }
-            // onSnapshot автоматично оновить список зліва, тому renderSavedList() тут не викликаємо
         }
 
         function loadRecord(fbId) {
@@ -763,7 +746,7 @@
                 }
                 
                 updateDoc();
-                renderSavedList(); // Оновлюємо, щоб підсвітити активний пункт
+                renderSavedList(); 
             }
         }
 
@@ -810,7 +793,7 @@
             }
         }
 
-        // --- ДОПОМІЖНІ ФУНКЦІЇ ДЛЯ РЕНДЕРУ (Точки, слова, числа) ---
+        // --- ДОПОМІЖНІ ФУНКЦІЇ ДЛЯ РЕНДЕРУ ---
 
         function addRoutePoint(value = "") {
             const container = document.getElementById('route_inputs');
@@ -968,7 +951,6 @@
             setElementsHTML('val-carrier-req-inv', cData.reqInv);
         }
 
-        // Ініціалізація інтерфейсу порожнім станом (заповниться при отриманні Snapshot)
         updateDoc();
         
     </script>
