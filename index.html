@@ -171,13 +171,13 @@
         .btn-remove {
             background-color: #f44336;
             color: white;
-            padding: 8px 12px;
+            padding: 4px 8px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             width: auto; 
             flex-shrink: 0;
-            font-size: 14px;
+            font-size: 12px;
         }
         .btn-remove:hover { background-color: #d32f2f; }
         
@@ -203,6 +203,16 @@
             margin-top: 5px;
         }
         .btn-add:hover { background-color: #007B9E; }
+
+        .btn-calc {
+            background-color: #ff9800;
+            font-size: 14px;
+            padding: 8px 12px;
+            width: auto;
+            margin-top: 5px;
+            color: white;
+        }
+        .btn-calc:hover { background-color: #e68a00; }
         
         .btn-save {
             background-color: #008CBA;
@@ -254,7 +264,8 @@
             margin-top: 30px;
         }
         .sign-block { width: 45%; }
-        .sign-title { font-weight: bold; margin-bottom: 10px; }
+        .sign-title { font-weight: bold; margin-bottom: 3px; }
+        .sign-text { line-height: 1.15; font-size: 14px; }
         hr { border-top: 1px solid black; border-bottom: none; margin-bottom: 5px; margin-top: 5px;}
         
         .invoice-signature {
@@ -317,19 +328,22 @@
                     </div>
 
                     <div class="full-width">
-                        <label>Автомобіль</label>
-                        <input type="text" id="car_input" list="car_suggestions" value="" oninput="updateDoc()" placeholder="Введіть марку та номер авто (без слова Автомобіль)">
+                        <label>Марка та номер авто</label>
+                        <input type="text" id="car_input" list="car_suggestions" value="" oninput="updateDoc()" placeholder="Введіть марку та номер авто">
                     </div>
                     
                     <div class="full-width">
                         <label>Маршрут (точки доставки)</label>
                         <div id="route_inputs">
                             <div class="route-row">
-                                <input type="text" class="route-point" list="route_suggestions" value="" oninput="updateDoc()" placeholder="Точка 1">
+                                <input type="text" class="route-point" list="route_suggestions" value="" oninput="updateDoc()" placeholder="Точка 1 (напр. м.Черкаси, вул. Хіміків 84)">
                                 <button type="button" class="btn-remove" onclick="removeRoutePoint(this)" title="Видалити точку">❌</button>
                             </div>
                         </div>
-                        <button type="button" class="btn-add" onclick="addRoutePoint()">+ Додати ще точку</button>
+                        <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+                            <button type="button" class="btn-add" onclick="addRoutePoint()">+ Додати ще точку</button>
+                            <button type="button" class="btn-calc" style="background-color: #4285F4;" onclick="openGoogleMaps()">🗺️ Відкрити в Google Maps</button>
+                        </div>
                     </div>
 
                     <div>
@@ -396,23 +410,19 @@
                         <div>Від виконавця</div>
                         <hr>
                         <div class="sign-title val-carrier-shortname"></div>
-                        <div class="val-carrier-req-act"></div>
+                        <div class="sign-text val-carrier-req-act"></div>
                     </div>
                     
                     <div class="sign-block">
                         <div>Від замовника</div>
                         <hr>
                         <div class="sign-title">Копаниця І.О.</div>
-                        <div>
+                        <div class="sign-text">
                             Товариство з обмеженою відповідальністю<br>
-                            "ФІРМА ЕРІДОН", місцезнаходження: 08467<br>
-                            Київська область, Переяслав-Хмельницький район,<br>
-                            с. Чопилки, вул. Богдана Хмельницького, 35, Код<br>
-                            ЄДРПОУ 43106699 Р/Р<br>
-                            UA603003350000000260082211692 в АТ<br>
-                            "Райффайзен Банк Аваль" м. Києва, МФО 300335,<br>
-                            Індивідуальний податковий № 431066910170 є<br>
-                            платником ПДВ.
+                            “ФІРМА ЕРІДОН”, місцезнаходження: 08467<br>
+                            <span style="white-space: nowrap;">Київська область, Переяслав-Хмельницький район,</span><br>
+                            с. Чопилки, вул. Богдана Хмельницького, 35,<br>
+                            Код ЄДРПОУ 43106699 Р/Р UA603003350000000260082211692 в АТ “Райффайзен Банк Аваль” м. Києва, МФО 300335, Індивідуальний податковий № 431066910170 є платником ПДВ.
                         </div>
                     </div>
                 </div>
@@ -463,23 +473,19 @@
                         <div>Від виконавця</div>
                         <hr>
                         <div class="sign-title val-carrier-shortname"></div>
-                        <div class="val-carrier-req-act"></div>
+                        <div class="sign-text val-carrier-req-act"></div>
                     </div>
                     
                     <div class="sign-block">
                         <div>Від замовника</div>
                         <hr>
                         <div class="sign-title">Копаниця І.О.</div>
-                        <div>
+                        <div class="sign-text">
                             Товариство з обмеженою відповідальністю<br>
-                            "ФІРМА ЕРІДОН", місцезнаходження: 08467<br>
-                            Київська область, Переяслав-Хмельницький район,<br>
-                            с. Чопилки, вул. Богдана Хмельницького, 35, Код<br>
-                            ЄДРПОУ 43106699 Р/Р<br>
-                            UA603003350000000260082211692 в АТ<br>
-                            "Райффайзен Банк Аваль" м. Києва, МФО 300335,<br>
-                            Індивідуальний податковий № 431066910170 є<br>
-                            платником ПДВ.
+                            “ФІРМА ЕРІДОН”, місцезнаходження: 08467<br>
+                            <span style="white-space: nowrap;">Київська область, Переяслав-Хмельницький район,</span><br>
+                            с. Чопилки, вул. Богдана Хмельницького, 35,<br>
+                            Код ЄДРПОУ 43106699 Р/Р UA603003350000000260082211692 в АТ “Райффайзен Банк Аваль” м. Києва, МФО 300335, Індивідуальний податковий № 431066910170 є платником ПДВ.
                         </div>
                     </div>
                 </div>
@@ -492,15 +498,15 @@
                 </div>
                 <div class="invoice-details">
                     <div>Виконавець :</div>
-                    <div class="val-carrier-req-inv"></div>
+                    <div class="sign-text val-carrier-req-inv"></div>
                     
                     <div>Платник:</div>
-                    <div>
-                        Товариство з обмеженою відповідальністю “ФІРМА ЕРІДОН”, місцезнаходження: 08467<br>
-                        Київська область, Переяслав-Хмельницький район,<br>
-                        с. Чопилки, вул. Богдана Хмельницького, 35, Код ЄДРПОУ 43106699 Р/Р<br>
-                        UA603003350000000260082211692 в АТ “Райффайзен Банк Аваль” м. Києва, МФО 300335,<br>
-                        Індивідуальний податковий № 431066910170 є платником ПДВ.
+                    <div class="sign-text">
+                        Товариство з обмеженою відповідальністю<br>
+                        “ФІРМА ЕРІДОН”, місцезнаходження: 08467<br>
+                        <span style="white-space: nowrap;">Київська область, Переяслав-Хмельницький район,</span><br>
+                        с. Чопилки, вул. Богдана Хмельницького, 35,<br>
+                        Код ЄДРПОУ 43106699 Р/Р UA603003350000000260082211692 в АТ “Райффайзен Банк Аваль” м. Києва, МФО 300335, Індивідуальний податковий № 431066910170 є платником ПДВ.
                     </div>
                 </div>
                 <table>
@@ -579,7 +585,7 @@
             }
         };
 
-        // --- СИНХРОНІЗАЦІЯ З FIREBASE (REALTIME) ---
+        // --- СИНХРОНІЗАЦІЯ З FIREBASE ---
         db.collection("trips").onSnapshot((snapshot) => {
             document.getElementById('fb_status').innerHTML = "🟢 Синхронізовано з хмарою";
             
@@ -611,7 +617,6 @@
 
         function updateRouteSuggestions() {
             let allPoints = new Set();
-            
             allTripsFromCloud.forEach(record => {
                 if (record.routePoints) {
                     record.routePoints.forEach(pt => {
@@ -631,14 +636,11 @@
 
         function updateCarSuggestions() {
             let allCars = new Set();
-            
-            // Додаємо стандартні авто перевізників у підказки за замовчуванням
             Object.values(carriersData).forEach(c => allCars.add(c.car));
 
             allTripsFromCloud.forEach(record => {
                 if (record.car && record.car.trim() !== "") {
                     let rawCar = record.car.trim();
-                    // Захист від старих збережень зі словом "Автомобіль"
                     if (rawCar.toLowerCase().startsWith('автомобіль ')) {
                         rawCar = rawCar.substring(11).trim();
                     }
@@ -717,7 +719,6 @@
             let car = document.getElementById('car_input').value.trim();
             const carrierKey = document.getElementById('carrier_select').value;
             
-            // Якщо випадково написали "Автомобіль", видаляємо його перед збереженням
             if (car.toLowerCase().startsWith('автомобіль ')) {
                 car = car.substring(11).trim();
             }
@@ -777,7 +778,6 @@
                 document.getElementById('trip_num').value = record.tripNum || "";
                 document.getElementById('doc_date').value = record.docDate || "";
                 
-                // Завантажуємо авто з бази, або беремо стандартне для перевізника
                 let loadedCar = record.car || carriersData[record.carrier || 'gurzhii'].car || "";
                 if (loadedCar.toLowerCase().startsWith('автомобіль ')) {
                     loadedCar = loadedCar.substring(11).trim();
@@ -820,10 +820,7 @@
             document.getElementById('doc_num').value = nextNum;
             document.getElementById('trip_num').value = "";
             document.getElementById('doc_date').value = ""; 
-            
-            // Автоматично підставляємо стандартне авто для поточного перевізника
             document.getElementById('car_input').value = carriersData[carrierKey].car; 
-            
             document.getElementById('km').value = ""; 
             document.getElementById('price').value = ""; 
             
@@ -847,6 +844,22 @@
             }
         }
 
+        function openGoogleMaps() {
+            const routeInputs = document.querySelectorAll('.route-point');
+            let points = [];
+            routeInputs.forEach(input => { 
+                if (input.value.trim() !== "") points.push(encodeURIComponent(input.value.trim())); 
+            });
+
+            if (points.length < 2) {
+                alert("Для прокладання маршруту потрібно мінімум 2 точки!");
+                return;
+            }
+
+            const url = `https://www.google.com/maps/dir/${points.join('/')}`;
+            window.open(url, '_blank');
+        }
+
         // --- ДОПОМІЖНІ ФУНКЦІЇ ДЛЯ РЕНДЕРУ ---
 
         function addRoutePoint(value = "") {
@@ -858,7 +871,7 @@
             input.type = 'text';
             input.className = 'route-point';
             input.setAttribute('list', 'route_suggestions');
-            input.placeholder = `Точка ${container.children.length + 1}`;
+            input.placeholder = `Точка ${container.children.length + 1} (напр. м.Черкаси, вул. Хіміків 84)`;
             input.value = value;
             input.oninput = updateDoc;
             
@@ -967,7 +980,6 @@
             const docNum = document.getElementById('doc_num').value;
             const docDate = formatDate(document.getElementById('doc_date').value);
             
-            // Беремо авто і також прибираємо слово Автомобіль, якщо раптом його ввели
             let carText = document.getElementById('car_input').value.trim();
             if (carText.toLowerCase().startsWith('автомобіль ')) {
                 carText = carText.substring(11).trim();
