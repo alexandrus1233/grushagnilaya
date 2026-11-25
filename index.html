@@ -3,223 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор Актів та Рахунків (Firebase)</title>
+    <title>Р”РѕРєСѓРјРµРЅС‚Рё СЂРµР№СЃС–РІ вЂ” Р°РєС‚Рё С‚Р° СЂР°С…СѓРЅРєРё</title>
     
-    <!-- Підключення Firebase -->
+    <!-- РџС–РґРєР»СЋС‡РµРЅРЅСЏ Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 
     <style>
-        body {
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-        
-        .interface-wrapper {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-            width: 100%;
-        }
-
-        .sidebar {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            width: 320px;
-            box-sizing: border-box;
-            flex-shrink: 0;
-            position: sticky;
-            top: 20px;
-            max-height: calc(100vh - 40px);
-            display: flex;
-            flex-direction: column;
-        }
-        .sidebar h3 { 
-            margin-top: 0; 
-            margin-bottom: 5px; 
-            font-size: 16px; 
-        }
-        .connection-status {
-            font-size: 11px;
-            color: #4CAF50;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0; 
-            padding-bottom: 10px;
-        }
-        .btn-new {
-            background-color: #333;
-            color: #fff;
-            font-size: 14px;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-new:hover { background-color: #555; }
-
-        .saved-list {
-            overflow-y: auto;
-            flex-grow: 1;
-        }
-        .saved-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            background: #f9f9f9;
-            transition: background 0.2s;
-        }
-        .saved-item:hover { background: #eef5fc; border-color: #b6d4fe; }
-        .saved-item.active { background: #e2f0d9; border-color: #a3cfbb; }
-        .saved-item .item-info {
-            flex-grow: 1;
-            font-size: 13px;
-            line-height: 1.4;
-            padding-right: 10px;
-        }
-        .saved-item .item-title { font-weight: bold; color: #111; }
-        .saved-item .item-trip { color: #008CBA; font-size: 12px; font-weight: bold; margin-bottom: 2px;}
-        .saved-item .item-route { font-size: 11px; color: #666; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
-        
-        .btn-delete-item {
-            background: none;
-            border: none;
-            color: #f44336;
-            cursor: pointer;
-            font-size: 14px;
-            padding: 5px;
-        }
-        .btn-delete-item:hover { color: #d32f2f; transform: scale(1.1); }
-
-        .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .controls {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 800px;
-            box-sizing: border-box;
-            margin-bottom: 20px;
-        }
-        .controls h2 { margin-top: 0; margin-bottom: 20px;}
-        
-        .carrier-select-wrapper {
-            margin-bottom: 25px;
-            background: #eef5fc;
-            padding: 15px;
-            border-radius: 6px;
-            border-left: 5px solid #008CBA;
-        }
-        .carrier-select-wrapper label {
-            display: block;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-        select#carrier_select {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .input-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        .input-group label {
-            display: block;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        
-        .route-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 8px;
-            align-items: center;
-        }
-        .route-row input { flex-grow: 1; }
-        .btn-remove {
-            background-color: #f44336;
-            color: white;
-            padding: 4px 8px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: auto; 
-            flex-shrink: 0;
-            font-size: 12px;
-        }
-        .btn-remove:hover { background-color: #d32f2f; }
-        
-        .full-width { grid-column: span 2; }
-        
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-        }
-        button:hover { background-color: #45a049; }
-        
-        .btn-add {
-            background-color: #008CBA;
-            font-size: 14px;
-            padding: 8px 12px;
-            width: auto;
-            margin-top: 5px;
-        }
-        .btn-add:hover { background-color: #007B9E; }
-
-        .btn-calc {
-            background-color: #ff9800;
-            font-size: 14px;
-            padding: 8px 12px;
-            width: auto;
-            margin-top: 5px;
-            color: white;
-        }
-        .btn-calc:hover { background-color: #e68a00; }
-        
-        .btn-save {
-            background-color: #008CBA;
-            margin-top: 10px;
-        }
-        .btn-save:hover { background-color: #007B9E; }
-
         .document {
             background: white;
             width: 210mm;
@@ -276,271 +66,445 @@
 
         .page-break { page-break-before: always; }
 
+        :root {
+            color-scheme: dark;
+            --bg: #101218;
+            --panel: #191c25;
+            --field: #12151d;
+            --line: #313646;
+            --text: #f3f4f8;
+            --muted: #aeb5c8;
+            --accent: #c7b9ff;
+            --primary: #c3b3ff;
+            --danger: #ffa7af;
+            --success: #8ae3b3;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--bg); color: var(--text); }
+        button, input, select { font: inherit; }
+        :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        a { color: inherit; }
+        button {
+            min-height: 40px;
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            padding: 8px 13px;
+            background: #232735;
+            color: var(--text);
+            cursor: pointer;
+            font-size: .875rem;
+            font-weight: 650;
+        }
+        button:hover:not(:disabled) { background: #2e3446; border-color: #626981; }
+        button:disabled { opacity: .55; cursor: wait; }
+        input, select {
+            display: block;
+            width: 100%;
+            min-width: 0;
+            min-height: 42px;
+            border: 1px solid #394052;
+            border-radius: 8px;
+            padding: 9px 11px;
+            background: var(--field);
+            color: var(--text);
+            font-size: .9375rem;
+        }
+        input::placeholder { color: #979fb4; }
+        input:focus, select:focus { border-color: var(--accent); }
+        label { display: block; margin-bottom: 6px; font-size: .8125rem; font-weight: 650; }
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px clamp(14px, 3vw, 36px);
+            background: #161922;
+            border-bottom: 1px solid var(--line);
+        }
+        .brand { display: flex; gap: 12px; align-items: center; text-decoration: none; font-weight: 750; }
+        .brand small { display: block; margin-top: 3px; color: var(--muted); font-size: .75rem; font-weight: 500; }
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            flex: none;
+            border-radius: 12px;
+            background: #30264a;
+            color: var(--accent);
+            font-size: 25px;
+        }
+        .connection-status { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: .75rem; }
+        .connection-status::before { content: ""; flex: 0 0 7px; height: 7px; border-radius: 50%; background: #f5cd85; }
+        .connection-status[data-state="ready"]::before { background: var(--success); }
+        .connection-status[data-state="error"]::before { background: var(--danger); }
+        .interface-wrapper {
+            display: grid;
+            grid-template-columns: minmax(190px, 236px) minmax(0, 1fr);
+            align-items: start;
+            gap: 16px;
+            max-width: 1720px;
+            margin: auto;
+            padding: 20px clamp(12px, 2vw, 30px) 40px;
+        }
+        .main-content { display: grid; grid-template-columns: minmax(330px, 410px) minmax(0, 1fr); gap: 16px; align-items: start; }
+        .panel { min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; }
+        .panel-heading { padding: 18px; border-bottom: 1px solid var(--line); }
+        h1, h2, p { margin: 0; }
+        h1 { font-size: 1.5rem; letter-spacing: -.03em; }
+        h2 { font-size: 1rem; }
+        .editor-heading p { margin-top: 5px; color: var(--muted); font-size: .875rem; }
+        .sidebar { position: sticky; top: 16px; max-height: calc(100dvh - 32px); display: flex; flex-direction: column; }
+        .sidebar input { margin-top: 10px; }
+        .btn-new { margin-top: 14px; width: 100%; color: var(--accent); }
+        .saved-list { overflow-y: auto; display: grid; gap: 8px; padding: 12px; }
+        .empty-archive { padding: 12px 4px; font-size: .8125rem; color: var(--muted); }
+        .saved-item { display: flex; align-items: center; min-width: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--field); }
+        .saved-item.active { border-color: var(--accent); }
+        .saved-item .item-info { flex: 1; display: grid; gap: 4px; min-width: 0; border: 0; background: transparent; text-align: left; font-size: .75rem; }
+        .item-trip { color: var(--accent); }
+        .item-meta, .item-route, .label-note { color: var(--muted); font-weight: 500; }
+        .item-route { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .btn-delete-item, .btn-remove { min-width: 40px; color: var(--danger); padding: 0; flex: none; font-size: 1.125rem; }
+        .btn-delete-item { margin-right: 4px; border: 0; background: transparent; }
+        .editor-fields { padding: 17px 18px 0; }
+        fieldset { min-width: 0; border: 0; margin: 0 0 18px; padding: 0 0 17px; border-bottom: 1px solid var(--line); }
+        fieldset:last-child { border: 0; margin-bottom: 0; padding-bottom: 0; }
+        legend { padding: 0; margin-bottom: 12px; font-size: .9375rem; font-weight: 750; }
+        .input-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .full-width { grid-column: 1 / -1; }
+        .label-note { margin-left: 6px; font-size: .75rem; }
+        .route-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+        .route-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+        .sum-row { margin-top: 14px; padding: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; border: 1px solid #48405e; border-radius: 9px; background: #272138; font-size: .8125rem; }
+        .sum-row output { color: var(--accent); font-size: 1.125rem; font-weight: 750; font-variant-numeric: tabular-nums; }
+        .editor-footer { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px 18px 18px; }
+        .btn-save { flex: 1 0 145px; color: #1c1335; background: var(--primary); border-color: transparent; }
+        .btn-save:hover:not(:disabled) { background: #dfd5ff; border-color: transparent; }
+        .save-status { flex: 1 0 100%; color: var(--muted); font-size: .8125rem; }
+        .save-status:empty { display: none; }
+        .save-status[data-state="ready"] { color: var(--success); }
+        .save-status[data-state="error"] { color: var(--danger); }
+        .preview { overflow: hidden; }
+        .preview-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .preview-tabs { display: flex; gap: 3px; background: var(--field); border-radius: 10px; padding: 3px; }
+        .preview-tabs button { min-height: 34px; padding: 4px 10px; border-color: transparent; background: transparent; color: var(--muted); }
+        .preview-tabs button[aria-pressed="true"] { background: #362d4e; color: #e4dcff; }
+        .preview-paper { padding: 14px; background: #232735; overflow: auto; }
+        .document { color: #151515; color-scheme: light; }
+        @media screen {
+            .document { zoom: var(--paper-scale, .5); margin: 0 auto; }
+            .document[hidden] { display: none; }
+        }
+        @media screen and (max-width: 1040px) {
+            .main-content { grid-template-columns: minmax(0, 1fr); }
+        }
+        @media screen and (max-width: 680px) {
+            .interface-wrapper { grid-template-columns: minmax(0, 1fr); }
+            .sidebar { position: static; max-height: none; }
+            .sidebar .panel-heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+            .sidebar .btn-new, .sidebar input { margin-top: 0; }
+            .sidebar input { grid-column: 1 / -1; }
+            .saved-list { max-height: 170px; }
+            input, select { font-size: 1rem; }
+        }
         @media print {
-            body { background: white; padding: 0; }
-            .sidebar { display: none; }
-            .controls { display: none; }
-            .interface-wrapper { display: block; }
-            .main-content { display: block; align-items: flex-start; }
-            .document { box-shadow: none; margin: 0; padding: 10mm; width: 100%; min-height: auto; }
+            @page { size: A4; margin: 10mm; }
+            :root { color-scheme: light; }
+            body, .preview-paper { background: #fff; padding: 0; overflow: visible; }
+            .topbar, .sidebar, .controls, .preview-heading { display: none !important; }
+            .interface-wrapper, .main-content, .preview { display: block; margin: 0; padding: 0; border: 0; border-radius: 0; overflow: visible; }
+            .document, .document[hidden] { display: block; zoom: 1; box-shadow: none; margin: 0; padding: 0; width: 100%; min-height: auto; }
         }
     </style>
 </head>
 <body>
-
+    <header class="topbar">
+        <a class="brand" href="#trip-editor">
+            <span class="brand-icon" aria-hidden="true">в–¤</span>
+            <span>Р”РѕРєСѓРјРµРЅС‚Рё СЂРµР№СЃС–РІ<small>РђРєС‚Рё С‚Р° СЂР°С…СѓРЅРєРё</small></span>
+        </a>
+        <div class="connection-status" id="fb_status" role="status" data-state="loading">РџС–РґРєР»СЋС‡РµРЅРЅСЏ РґРѕ Firestore</div>
+    </header>
     <datalist id="route_suggestions"></datalist>
     <datalist id="car_suggestions"></datalist>
-
     <div class="interface-wrapper">
-        <div class="sidebar">
-            <h3>Архів рейсів</h3>
-            <div class="connection-status" id="fb_status">⏳ Підключення до хмари...</div>
-            <button type="button" class="btn-new" onclick="createNewRecord()">➕ Новий рейс</button>
+        <aside class="sidebar panel" aria-labelledby="archive-title">
+            <div class="panel-heading">
+                <h2 id="archive-title">РђСЂС…С–РІ СЂРµР№СЃС–РІ</h2>
+                <button type="button" class="btn-new" onclick="createNewRecord(true)">пј‹ РќРѕРІРёР№ СЂРµР№СЃ</button>
+                <label class="visually-hidden" for="archive-search">РџРѕС€СѓРє РІ Р°СЂС…С–РІС–</label>
+                <input id="archive-search" type="search" placeholder="РќРѕРјРµСЂ Р°Р±Рѕ РјР°СЂС€СЂСѓС‚" oninput="renderSavedList()">
+            </div>
             <div class="saved-list" id="saved_list_container"></div>
-        </div>
+        </aside>
 
-        <div class="main-content">
-            <div class="controls">
-                <h2>Введіть дані рейсу</h2>
-
-                <div class="carrier-select-wrapper">
-                    <label>ВІД КОГО СТВОРЮЄМО ДОКУМЕНТИ (Перевізник):</label>
-                    <select id="carrier_select" onchange="changeCarrier()">
-                        <option value="gurzhii">Гуржій Віталій Васильович</option>
-                        <option value="fedorov">Федоров Станіслав Анатолійович</option>
-                        <option value="muzhanovskyi">Мужановський Валентин Леонгінович</option>
-                    </select>
+        <main class="main-content">
+            <section class="controls panel" id="trip-editor" aria-labelledby="editor-title">
+                <div class="panel-heading editor-heading">
+                    <h1 id="editor-title">РќРѕРІРёР№ СЂРµР№СЃ</h1>
+                    <p>Р—Р°РїРѕРІРЅС–С‚СЊ РґР°РЅС– РґР»СЏ Р°РєС‚Р° Р№ СЂР°С…СѓРЅРєСѓ.</p>
                 </div>
-
-                <div class="input-group">
-                    <div>
-                        <label>Номер акту та рахунку</label>
-                        <input type="text" id="doc_num" value="" oninput="updateDoc()">
-                    </div>
-                    <div>
-                        <label>Дата (оберіть з календаря)</label>
-                        <input type="date" id="doc_date" value="" oninput="updateDoc()" onchange="updateDoc()">
-                    </div>
-                    
-                    <div class="full-width">
-                        <label>Номер рейсу (тільки для архіву, в акт не йде)</label>
-                        <input type="text" id="trip_num" value="" placeholder="напр. TE-441362">
-                    </div>
-
-                    <div class="full-width">
-                        <label>Марка та номер авто</label>
-                        <input type="text" id="car_input" list="car_suggestions" value="" oninput="updateDoc()" placeholder="Введіть марку та номер авто">
-                    </div>
-                    
-                    <div class="full-width">
-                        <label>Маршрут (точки доставки)</label>
-                        <div id="route_inputs">
-                            <div class="route-row">
-                                <input type="text" class="route-point" list="route_suggestions" value="" oninput="updateDoc()" placeholder="Точка 1 (напр. м.Черкаси, вул. Хіміків 84)">
-                                <button type="button" class="btn-remove" onclick="removeRoutePoint(this)" title="Видалити точку">❌</button>
+                <div class="editor-fields">
+                    <fieldset>
+                        <legend>Р”Р°РЅС– РґРѕРєСѓРјРµРЅС‚С–РІ</legend>
+                        <div class="input-group">
+                            <div class="full-width">
+                                <label for="carrier_select">РџРµСЂРµРІС–Р·РЅРёРє</label>
+                                <select id="carrier_select" onchange="changeCarrier()">
+                                    <option value="gurzhii">Р“СѓСЂР¶С–Р№ Р’С–С‚Р°Р»С–Р№ Р’Р°СЃРёР»СЊРѕРІРёС‡</option>
+                                    <option value="fedorov">Р¤РµРґРѕСЂРѕРІ РЎС‚Р°РЅС–СЃР»Р°РІ РђРЅР°С‚РѕР»С–Р№РѕРІРёС‡</option>
+                                    <option value="muzhanovskyi">РњСѓР¶Р°РЅРѕРІСЃСЊРєРёР№ Р’Р°Р»РµРЅС‚РёРЅ Р›РµРѕРЅРіС–РЅРѕРІРёС‡</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="doc_num">в„– Р°РєС‚Р° Р№ СЂР°С…СѓРЅРєСѓ</label>
+                                <input type="text" id="doc_num" oninput="updateDoc()" required>
+                            </div>
+                            <div>
+                                <label for="doc_date">Р”Р°С‚Р°</label>
+                                <input type="date" id="doc_date" oninput="updateDoc()">
+                            </div>
+                            <div class="full-width">
+                                <label for="trip_num">в„– СЂРµР№СЃСѓ <span class="label-note">Р»РёС€Рµ РґР»СЏ Р°СЂС…С–РІСѓ</span></label>
+                                <input type="text" id="trip_num" placeholder="РќР°РїСЂРёРєР»Р°Рґ, TE-441362">
+                            </div>
+                            <div class="full-width">
+                                <label for="car_input">РњР°СЂРєР° Р№ РЅРѕРјРµСЂ Р°РІС‚Рѕ</label>
+                                <input type="text" id="car_input" list="car_suggestions" oninput="updateDoc()">
                             </div>
                         </div>
-                        <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
-                            <button type="button" class="btn-add" onclick="addRoutePoint()">+ Додати ще точку</button>
-                            <button type="button" class="btn-calc" style="background-color: #4285F4;" onclick="openGoogleMaps()">🗺️ Відкрити в Google Maps</button>
+                    </fieldset>
+                    <fieldset>
+                        <legend>РњР°СЂС€СЂСѓС‚</legend>
+                        <div id="route_inputs"></div>
+                        <div class="route-actions">
+                            <button type="button" onclick="addRoutePoint('', true)">пј‹ Р”РѕРґР°С‚Рё С‚РѕС‡РєСѓ</button>
+                            <button type="button" onclick="openGoogleMaps()">Google Maps в†—</button>
                         </div>
-                    </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Р’Р°СЂС‚С–СЃС‚СЊ РїРµСЂРµРІРµР·РµРЅРЅСЏ</legend>
+                        <div class="input-group">
+                            <div>
+                                <label for="km">Р’С–РґСЃС‚Р°РЅСЊ, РєРј</label>
+                                <input type="number" id="km" step="any" inputmode="decimal" oninput="updateDoc()">
+                            </div>
+                            <div>
+                                <label for="price">РўР°СЂРёС„, РіСЂРЅ/РєРј</label>
+                                <input type="number" id="price" step="0.01" inputmode="decimal" oninput="updateDoc()">
+                            </div>
+                            <div class="full-width">
+                                <label for="sum_words">РЎСѓРјР° СЃР»РѕРІР°РјРё</label>
+                                <input type="text" id="sum_words" oninput="updateDocManualWords()">
+                            </div>
+                        </div>
+                        <div class="sum-row"><span>Р Р°Р·РѕРј Р±РµР· РџР”Р’</span><output id="total-display" for="km price">0,00В РіСЂРЅ</output></div>
+                    </fieldset>
+                </div>
+                <div class="editor-footer">
+                    <button type="button" class="btn-save" onclick="saveCurrentRecord()">Р—Р±РµСЂРµРіС‚Рё РІ Р°СЂС…С–РІ</button>
+                    <button type="button" onclick="window.print()">Р”СЂСѓРє / PDF</button>
+                    <p id="save_status" class="save-status" role="status"></p>
+                </div>
+            </section>
 
-                    <div>
-                        <label>Кілометраж (км)</label>
-                        <input type="number" id="km" value="" oninput="updateDoc()">
-                    </div>
-                    <div>
-                        <label>Ціна без ПДВ за 1 км (грн)</label>
-                        <input type="number" id="price" value="" step="0.01" oninput="updateDoc()">
-                    </div>
-                    
-                    <div class="full-width">
-                        <label>Сума прописом</label>
-                        <input type="text" id="sum_words" value="" oninput="updateDocManualWords()">
+            <section class="preview panel" aria-labelledby="preview-title">
+                <div class="panel-heading preview-heading">
+                    <h2 id="preview-title">РџРµСЂРµРґРїРµСЂРµРіР»СЏРґ</h2>
+                    <div class="preview-tabs" role="group" aria-label="РЎС‚РѕСЂС–РЅРєРё РґРѕРєСѓРјРµРЅС‚С–РІ">
+                        <button type="button" aria-controls="act-one" aria-pressed="true">РђРєС‚ 1</button>
+                        <button type="button" aria-controls="act-two" aria-pressed="false">РђРєС‚ 2</button>
+                        <button type="button" aria-controls="invoice" aria-pressed="false">Р Р°С…СѓРЅРѕРє</button>
                     </div>
                 </div>
-                
-                <button onclick="window.print()">🖨️ Роздрукувати (Акт 1 + Акт 2 + Рахунок)</button>
-                <button onclick="saveCurrentRecord()" class="btn-save">💾 Зберегти у хмару Firebase</button>
-            </div>
-
-            <!-- СТОРІНКА 1: АКТ (Копія 1) -->
-            <div class="document">
+                <div class="preview-paper" id="preview-paper">
+            <!-- РЎРўРћР Р†РќРљРђ 1: РђРљРў (РљРѕРїС–СЏ 1) -->
+            <div class="document" id="act-one">
                 <div class="doc-header">
-                    АКТ надання послуг № <span class="val-doc-num"></span> від <span class="val-doc-date"></span>
+                    РђРљРў РЅР°РґР°РЅРЅСЏ РїРѕСЃР»СѓРі в„– <span class="val-doc-num"></span> РІС–Рґ <span class="val-doc-date"></span>
                 </div>
                 <div class="preamble">
-                    Ми, що нижче підписалися, представник Замовника Товариство з обмеженою відповідальністю "Фірма Ерідон", в особі директора Копаниці Ігоря Олеговича, з одного боку, і представник "Виконавця" <span class="val-carrier-fullname"></span>, з іншого боку, склали цей акт про те, що на підставі наведених документів:
+                    РњРё, С‰Рѕ РЅРёР¶С‡Рµ РїС–РґРїРёСЃР°Р»РёСЃСЏ, РїСЂРµРґСЃС‚Р°РІРЅРёРє Р—Р°РјРѕРІРЅРёРєР° РўРѕРІР°СЂРёСЃС‚РІРѕ Р· РѕР±РјРµР¶РµРЅРѕСЋ РІС–РґРїРѕРІС–РґР°Р»СЊРЅС–СЃС‚СЋ "Р¤С–СЂРјР° Р•СЂС–РґРѕРЅ", РІ РѕСЃРѕР±С– РґРёСЂРµРєС‚РѕСЂР° РљРѕРїР°РЅРёС†С– Р†РіРѕСЂСЏ РћР»РµРіРѕРІРёС‡Р°, Р· РѕРґРЅРѕРіРѕ Р±РѕРєСѓ, С– РїСЂРµРґСЃС‚Р°РІРЅРёРє "Р’РёРєРѕРЅР°РІС†СЏ" <span class="val-carrier-fullname"></span>, Р· С–РЅС€РѕРіРѕ Р±РѕРєСѓ, СЃРєР»Р°Р»Рё С†РµР№ Р°РєС‚ РїСЂРѕ С‚Рµ, С‰Рѕ РЅР° РїС–РґСЃС‚Р°РІС– РЅР°РІРµРґРµРЅРёС… РґРѕРєСѓРјРµРЅС‚С–РІ:
                 </div>
                 <div class="doc-meta">
-                    Рахунок № <span class="val-doc-num"></span> від <span class="val-doc-date"></span><br>
+                    Р Р°С…СѓРЅРѕРє в„– <span class="val-doc-num"></span> РІС–Рґ <span class="val-doc-date"></span><br>
                     <span class="val-contract"></span><br>
-                    Автомобіль <span class="val-car"></span>
+                    РђРІС‚РѕРјРѕР±С–Р»СЊ <span class="val-car"></span>
                 </div>
-                <div>Виконавцем були виконані наступні послуги (надані такі послуги):</div>
+                <div>Р’РёРєРѕРЅР°РІС†РµРј Р±СѓР»Рё РІРёРєРѕРЅР°РЅС– РЅР°СЃС‚СѓРїРЅС– РїРѕСЃР»СѓРіРё (РЅР°РґР°РЅС– С‚Р°РєС– РїРѕСЃР»СѓРіРё):</div>
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 5%;">№</th>
-                            <th style="width: 55%;">Найменування робіт, послуг</th>
-                            <th style="width: 5%;">од.</th>
-                            <th style="width: 10%;">кіл-ть</th>
-                            <th style="width: 10%;">Ціна без<br>ПДВ<br>(грн.)</th>
-                            <th style="width: 15%;">Сума без<br>ПДВ<br>(грн.)</th>
+                            <th style="width: 5%;">в„–</th>
+                            <th style="width: 55%;">РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ СЂРѕР±С–С‚, РїРѕСЃР»СѓРі</th>
+                            <th style="width: 5%;">РѕРґ.</th>
+                            <th style="width: 10%;">РєС–Р»-С‚СЊ</th>
+                            <th style="width: 10%;">Р¦С–РЅР° Р±РµР·<br>РџР”Р’<br>(РіСЂРЅ.)</th>
+                            <th style="width: 15%;">РЎСѓРјР° Р±РµР·<br>РџР”Р’<br>(РіСЂРЅ.)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td class="text-left">Транспортні послуги по маршруту: <span class="val-route"></span></td>
-                            <td>км</td>
+                            <td class="text-left">РўСЂР°РЅСЃРїРѕСЂС‚РЅС– РїРѕСЃР»СѓРіРё РїРѕ РјР°СЂС€СЂСѓС‚Сѓ: <span class="val-route"></span></td>
+                            <td>РєРј</td>
                             <td><span class="val-km"></span></td>
                             <td><span class="val-price"></span></td>
                             <td><span class="val-sum"></span></td>
                         </tr>
                     </tbody>
                 </table>
-                <div class="totals">Разом <span class="val-sum"></span><br>Сума ПДВ 0,00<br>Усього з ПДВ <span class="val-sum"></span></div>
-                <div style="margin-bottom: 10px;">Загальна вартість робіт (послуг) склала <span class="val-sum-words"></span> без ПДВ</div>
-                <div style="margin-bottom: 30px;">Замовник претензій по об'єму, якості та строкам виконання робіт (надання послуг) не має</div>
+                <div class="totals">Р Р°Р·РѕРј <span class="val-sum"></span><br>РЎСѓРјР° РџР”Р’ 0,00<br>РЈСЃСЊРѕРіРѕ Р· РџР”Р’ <span class="val-sum"></span></div>
+                <div style="margin-bottom: 10px;">Р—Р°РіР°Р»СЊРЅР° РІР°СЂС‚С–СЃС‚СЊ СЂРѕР±С–С‚ (РїРѕСЃР»СѓРі) СЃРєР»Р°Р»Р° <span class="val-sum-words"></span> Р±РµР· РџР”Р’</div>
+                <div style="margin-bottom: 30px;">Р—Р°РјРѕРІРЅРёРє РїСЂРµС‚РµРЅР·С–Р№ РїРѕ РѕР±'С”РјСѓ, СЏРєРѕСЃС‚С– С‚Р° СЃС‚СЂРѕРєР°Рј РІРёРєРѕРЅР°РЅРЅСЏ СЂРѕР±С–С‚ (РЅР°РґР°РЅРЅСЏ РїРѕСЃР»СѓРі) РЅРµ РјР°С”</div>
                 
                 <div class="signatures">
                     <div class="sign-block">
-                        <div>Від виконавця</div>
+                        <div>Р’С–Рґ РІРёРєРѕРЅР°РІС†СЏ</div>
                         <hr>
                         <div class="sign-title val-carrier-shortname"></div>
                         <div class="sign-text val-carrier-req-act"></div>
                     </div>
                     
                     <div class="sign-block">
-                        <div>Від замовника</div>
+                        <div>Р’С–Рґ Р·Р°РјРѕРІРЅРёРєР°</div>
                         <hr>
-                        <div class="sign-title">Копаниця І.О.</div>
+                        <div class="sign-title">РљРѕРїР°РЅРёС†СЏ Р†.Рћ.</div>
                         <div class="sign-text">
-                            Товариство з обмеженою відповідальністю<br>
-                            “ФІРМА ЕРІДОН”, місцезнаходження: 08467<br>
-                            <span style="white-space: nowrap;">Київська область, Переяслав-Хмельницький район,</span><br>
-                            с. Чопилки, вул. Богдана Хмельницького, 35,<br>
-                            Код ЄДРПОУ 43106699 Р/Р UA603003350000000260082211692 в АТ “Райффайзен Банк Аваль” м. Києва, МФО 300335, Індивідуальний податковий № 431066910170 є платником ПДВ.
+                            РўРѕРІР°СЂРёСЃС‚РІРѕ Р· РѕР±РјРµР¶РµРЅРѕСЋ РІС–РґРїРѕРІС–РґР°Р»СЊРЅС–СЃС‚СЋ<br>
+                            вЂњР¤Р†Р РњРђ Р•Р Р†Р”РћРќвЂќ, РјС–СЃС†РµР·РЅР°С…РѕРґР¶РµРЅРЅСЏ: 08467<br>
+                            <span style="white-space: nowrap;">РљРёС—РІСЃСЊРєР° РѕР±Р»Р°СЃС‚СЊ, РџРµСЂРµСЏСЃР»Р°РІ-РҐРјРµР»СЊРЅРёС†СЊРєРёР№ СЂР°Р№РѕРЅ,</span><br>
+                            СЃ. Р§РѕРїРёР»РєРё, РІСѓР». Р‘РѕРіРґР°РЅР° РҐРјРµР»СЊРЅРёС†СЊРєРѕРіРѕ, 35,<br>
+                            РљРѕРґ Р„Р”Р РџРћРЈ 43106699 Р /Р  UA603003350000000260082211692 РІ РђРў вЂњР Р°Р№С„С„Р°Р№Р·РµРЅ Р‘Р°РЅРє РђРІР°Р»СЊвЂќ Рј. РљРёС”РІР°, РњР¤Рћ 300335, Р†РЅРґРёРІС–РґСѓР°Р»СЊРЅРёР№ РїРѕРґР°С‚РєРѕРІРёР№ в„– 431066910170 С” РїР»Р°С‚РЅРёРєРѕРј РџР”Р’.
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- СТОРІНКА 2: АКТ (Копія 2) -->
-            <div class="document page-break">
+            <!-- РЎРўРћР Р†РќРљРђ 2: РђРљРў (РљРѕРїС–СЏ 2) -->
+            <div class="document page-break" id="act-two" hidden>
                 <div class="doc-header">
-                    АКТ надання послуг № <span class="val-doc-num"></span> від <span class="val-doc-date"></span>
+                    РђРљРў РЅР°РґР°РЅРЅСЏ РїРѕСЃР»СѓРі в„– <span class="val-doc-num"></span> РІС–Рґ <span class="val-doc-date"></span>
                 </div>
                 <div class="preamble">
-                    Ми, що нижче підписалися, представник Замовника Товариство з обмеженою відповідальністю "Фірма Ерідон", в особі директора Копаниці Ігоря Олеговича, з одного боку, і представник "Виконавця" <span class="val-carrier-fullname"></span>, з іншого боку, склали цей акт про те, що на підставі наведених документів:
+                    РњРё, С‰Рѕ РЅРёР¶С‡Рµ РїС–РґРїРёСЃР°Р»РёСЃСЏ, РїСЂРµРґСЃС‚Р°РІРЅРёРє Р—Р°РјРѕРІРЅРёРєР° РўРѕРІР°СЂРёСЃС‚РІРѕ Р· РѕР±РјРµР¶РµРЅРѕСЋ РІС–РґРїРѕРІС–РґР°Р»СЊРЅС–СЃС‚СЋ "Р¤С–СЂРјР° Р•СЂС–РґРѕРЅ", РІ РѕСЃРѕР±С– РґРёСЂРµРєС‚РѕСЂР° РљРѕРїР°РЅРёС†С– Р†РіРѕСЂСЏ РћР»РµРіРѕРІРёС‡Р°, Р· РѕРґРЅРѕРіРѕ Р±РѕРєСѓ, С– РїСЂРµРґСЃС‚Р°РІРЅРёРє "Р’РёРєРѕРЅР°РІС†СЏ" <span class="val-carrier-fullname"></span>, Р· С–РЅС€РѕРіРѕ Р±РѕРєСѓ, СЃРєР»Р°Р»Рё С†РµР№ Р°РєС‚ РїСЂРѕ С‚Рµ, С‰Рѕ РЅР° РїС–РґСЃС‚Р°РІС– РЅР°РІРµРґРµРЅРёС… РґРѕРєСѓРјРµРЅС‚С–РІ:
                 </div>
                 <div class="doc-meta">
-                    Рахунок № <span class="val-doc-num"></span> від <span class="val-doc-date"></span><br>
+                    Р Р°С…СѓРЅРѕРє в„– <span class="val-doc-num"></span> РІС–Рґ <span class="val-doc-date"></span><br>
                     <span class="val-contract"></span><br>
-                    Автомобіль <span class="val-car"></span>
+                    РђРІС‚РѕРјРѕР±С–Р»СЊ <span class="val-car"></span>
                 </div>
-                <div>Виконавцем були виконані наступні послуги (надані такі послуги):</div>
+                <div>Р’РёРєРѕРЅР°РІС†РµРј Р±СѓР»Рё РІРёРєРѕРЅР°РЅС– РЅР°СЃС‚СѓРїРЅС– РїРѕСЃР»СѓРіРё (РЅР°РґР°РЅС– С‚Р°РєС– РїРѕСЃР»СѓРіРё):</div>
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 5%;">№</th>
-                            <th style="width: 55%;">Найменування робіт, послуг</th>
-                            <th style="width: 5%;">од.</th>
-                            <th style="width: 10%;">кіл-ть</th>
-                            <th style="width: 10%;">Ціна без<br>ПДВ<br>(грн.)</th>
-                            <th style="width: 15%;">Сума без<br>ПДВ<br>(грн.)</th>
+                            <th style="width: 5%;">в„–</th>
+                            <th style="width: 55%;">РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ СЂРѕР±С–С‚, РїРѕСЃР»СѓРі</th>
+                            <th style="width: 5%;">РѕРґ.</th>
+                            <th style="width: 10%;">РєС–Р»-С‚СЊ</th>
+                            <th style="width: 10%;">Р¦С–РЅР° Р±РµР·<br>РџР”Р’<br>(РіСЂРЅ.)</th>
+                            <th style="width: 15%;">РЎСѓРјР° Р±РµР·<br>РџР”Р’<br>(РіСЂРЅ.)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td class="text-left">Транспортні послуги по маршруту: <span class="val-route"></span></td>
-                            <td>км</td>
+                            <td class="text-left">РўСЂР°РЅСЃРїРѕСЂС‚РЅС– РїРѕСЃР»СѓРіРё РїРѕ РјР°СЂС€СЂСѓС‚Сѓ: <span class="val-route"></span></td>
+                            <td>РєРј</td>
                             <td><span class="val-km"></span></td>
                             <td><span class="val-price"></span></td>
                             <td><span class="val-sum"></span></td>
                         </tr>
                     </tbody>
                 </table>
-                <div class="totals">Разом <span class="val-sum"></span><br>Сума ПДВ 0,00<br>Усього з ПДВ <span class="val-sum"></span></div>
-                <div style="margin-bottom: 10px;">Загальна вартість робіт (послуг) склала <span class="val-sum-words"></span> без ПДВ</div>
-                <div style="margin-bottom: 30px;">Замовник претензій по об'єму, якості та строкам виконання робіт (надання послуг) не має</div>
+                <div class="totals">Р Р°Р·РѕРј <span class="val-sum"></span><br>РЎСѓРјР° РџР”Р’ 0,00<br>РЈСЃСЊРѕРіРѕ Р· РџР”Р’ <span class="val-sum"></span></div>
+                <div style="margin-bottom: 10px;">Р—Р°РіР°Р»СЊРЅР° РІР°СЂС‚С–СЃС‚СЊ СЂРѕР±С–С‚ (РїРѕСЃР»СѓРі) СЃРєР»Р°Р»Р° <span class="val-sum-words"></span> Р±РµР· РџР”Р’</div>
+                <div style="margin-bottom: 30px;">Р—Р°РјРѕРІРЅРёРє РїСЂРµС‚РµРЅР·С–Р№ РїРѕ РѕР±'С”РјСѓ, СЏРєРѕСЃС‚С– С‚Р° СЃС‚СЂРѕРєР°Рј РІРёРєРѕРЅР°РЅРЅСЏ СЂРѕР±С–С‚ (РЅР°РґР°РЅРЅСЏ РїРѕСЃР»СѓРі) РЅРµ РјР°С”</div>
                 
                 <div class="signatures">
                     <div class="sign-block">
-                        <div>Від виконавця</div>
+                        <div>Р’С–Рґ РІРёРєРѕРЅР°РІС†СЏ</div>
                         <hr>
                         <div class="sign-title val-carrier-shortname"></div>
                         <div class="sign-text val-carrier-req-act"></div>
                     </div>
                     
                     <div class="sign-block">
-                        <div>Від замовника</div>
+                        <div>Р’С–Рґ Р·Р°РјРѕРІРЅРёРєР°</div>
                         <hr>
-                        <div class="sign-title">Копаниця І.О.</div>
+                        <div class="sign-title">РљРѕРїР°РЅРёС†СЏ Р†.Рћ.</div>
                         <div class="sign-text">
-                            Товариство з обмеженою відповідальністю<br>
-                            “ФІРМА ЕРІДОН”, місцезнаходження: 08467<br>
-                            <span style="white-space: nowrap;">Київська область, Переяслав-Хмельницький район,</span><br>
-                            с. Чопилки, вул. Богдана Хмельницького, 35,<br>
-                            Код ЄДРПОУ 43106699 Р/Р UA603003350000000260082211692 в АТ “Райффайзен Банк Аваль” м. Києва, МФО 300335, Індивідуальний податковий № 431066910170 є платником ПДВ.
+                            РўРѕРІР°СЂРёСЃС‚РІРѕ Р· РѕР±РјРµР¶РµРЅРѕСЋ РІС–РґРїРѕРІС–РґР°Р»СЊРЅС–СЃС‚СЋ<br>
+                            вЂњР¤Р†Р РњРђ Р•Р Р†Р”РћРќвЂќ, РјС–СЃС†РµР·РЅР°С…РѕРґР¶РµРЅРЅСЏ: 08467<br>
+                            <span style="white-space: nowrap;">РљРёС—РІСЃСЊРєР° РѕР±Р»Р°СЃС‚СЊ, РџРµСЂРµСЏСЃР»Р°РІ-РҐРјРµР»СЊРЅРёС†СЊРєРёР№ СЂР°Р№РѕРЅ,</span><br>
+                            СЃ. Р§РѕРїРёР»РєРё, РІСѓР». Р‘РѕРіРґР°РЅР° РҐРјРµР»СЊРЅРёС†СЊРєРѕРіРѕ, 35,<br>
+                            РљРѕРґ Р„Р”Р РџРћРЈ 43106699 Р /Р  UA603003350000000260082211692 РІ РђРў вЂњР Р°Р№С„С„Р°Р№Р·РµРЅ Р‘Р°РЅРє РђРІР°Р»СЊвЂќ Рј. РљРёС”РІР°, РњР¤Рћ 300335, Р†РЅРґРёРІС–РґСѓР°Р»СЊРЅРёР№ РїРѕРґР°С‚РєРѕРІРёР№ в„– 431066910170 С” РїР»Р°С‚РЅРёРєРѕРј РџР”Р’.
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- СТОРІНКА 3: РАХУНОК -->
-            <div class="document page-break">
+            <!-- РЎРўРћР Р†РќРљРђ 3: Р РђРҐРЈРќРћРљ -->
+            <div class="document page-break" id="invoice" hidden>
                 <div class="invoice-header">
-                    Рахунок №<span class="val-doc-num"></span> від <span class="val-doc-date"></span>
+                    Р Р°С…СѓРЅРѕРє в„–<span class="val-doc-num"></span> РІС–Рґ <span class="val-doc-date"></span>
                 </div>
                 <div class="invoice-details">
-                    <div>Виконавець :</div>
+                    <div>Р’РёРєРѕРЅР°РІРµС†СЊ :</div>
                     <div class="sign-text val-carrier-req-inv"></div>
                     
-                    <div>Платник:</div>
+                    <div>РџР»Р°С‚РЅРёРє:</div>
                     <div class="sign-text">
-                        Товариство з обмеженою відповідальністю<br>
-                        “ФІРМА ЕРІДОН”, місцезнаходження: 08467<br>
-                        <span style="white-space: nowrap;">Київська область, Переяслав-Хмельницький район,</span><br>
-                        с. Чопилки, вул. Богдана Хмельницького, 35,<br>
-                        Код ЄДРПОУ 43106699 Р/Р UA603003350000000260082211692 в АТ “Райффайзен Банк Аваль” м. Києва, МФО 300335, Індивідуальний податковий № 431066910170 є платником ПДВ.
+                        РўРѕРІР°СЂРёСЃС‚РІРѕ Р· РѕР±РјРµР¶РµРЅРѕСЋ РІС–РґРїРѕРІС–РґР°Р»СЊРЅС–СЃС‚СЋ<br>
+                        вЂњР¤Р†Р РњРђ Р•Р Р†Р”РћРќвЂќ, РјС–СЃС†РµР·РЅР°С…РѕРґР¶РµРЅРЅСЏ: 08467<br>
+                        <span style="white-space: nowrap;">РљРёС—РІСЃСЊРєР° РѕР±Р»Р°СЃС‚СЊ, РџРµСЂРµСЏСЃР»Р°РІ-РҐРјРµР»СЊРЅРёС†СЊРєРёР№ СЂР°Р№РѕРЅ,</span><br>
+                        СЃ. Р§РѕРїРёР»РєРё, РІСѓР». Р‘РѕРіРґР°РЅР° РҐРјРµР»СЊРЅРёС†СЊРєРѕРіРѕ, 35,<br>
+                        РљРѕРґ Р„Р”Р РџРћРЈ 43106699 Р /Р  UA603003350000000260082211692 РІ РђРў вЂњР Р°Р№С„С„Р°Р№Р·РµРЅ Р‘Р°РЅРє РђРІР°Р»СЊвЂќ Рј. РљРёС”РІР°, РњР¤Рћ 300335, Р†РЅРґРёРІС–РґСѓР°Р»СЊРЅРёР№ РїРѕРґР°С‚РєРѕРІРёР№ в„– 431066910170 С” РїР»Р°С‚РЅРёРєРѕРј РџР”Р’.
                     </div>
                 </div>
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 5%;">№</th>
-                            <th style="width: 55%;">Найменування робіт, послуг</th>
-                            <th style="width: 5%;">од.</th>
-                            <th style="width: 10%;">кіл-ть</th>
-                            <th style="width: 10%;">Ціна без<br>ПДВ<br>(грн.)</th>
-                            <th style="width: 15%;">Сума без<br>ПДВ<br>(грн.)</th>
+                            <th style="width: 5%;">в„–</th>
+                            <th style="width: 55%;">РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ СЂРѕР±С–С‚, РїРѕСЃР»СѓРі</th>
+                            <th style="width: 5%;">РѕРґ.</th>
+                            <th style="width: 10%;">РєС–Р»-С‚СЊ</th>
+                            <th style="width: 10%;">Р¦С–РЅР° Р±РµР·<br>РџР”Р’<br>(РіСЂРЅ.)</th>
+                            <th style="width: 15%;">РЎСѓРјР° Р±РµР·<br>РџР”Р’<br>(РіСЂРЅ.)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td class="text-left">Транспортні послуги по маршруту: <span class="val-route"></span></td>
-                            <td>км</td>
+                            <td class="text-left">РўСЂР°РЅСЃРїРѕСЂС‚РЅС– РїРѕСЃР»СѓРіРё РїРѕ РјР°СЂС€СЂСѓС‚Сѓ: <span class="val-route"></span></td>
+                            <td>РєРј</td>
                             <td><span class="val-km"></span></td>
                             <td><span class="val-price"></span></td>
                             <td><span class="val-sum"></span></td>
                         </tr>
                     </tbody>
                 </table>
-                <div class="totals">Разом <span class="val-sum"></span><br>Сума ПДВ 0,00<br>Усього з ПДВ <span class="val-sum"></span></div>
-                <div style="margin-bottom: 40px;">Загальна вартість робіт (послуг) склала <span class="val-sum-words"></span> без ПДВ</div>
+                <div class="totals">Р Р°Р·РѕРј <span class="val-sum"></span><br>РЎСѓРјР° РџР”Р’ 0,00<br>РЈСЃСЊРѕРіРѕ Р· РџР”Р’ <span class="val-sum"></span></div>
+                <div style="margin-bottom: 40px;">Р—Р°РіР°Р»СЊРЅР° РІР°СЂС‚С–СЃС‚СЊ СЂРѕР±С–С‚ (РїРѕСЃР»СѓРі) СЃРєР»Р°Р»Р° <span class="val-sum-words"></span> Р±РµР· РџР”Р’</div>
                 <div class="invoice-signature"><span style="display:inline-block; border-bottom: 1px solid black; width: 250px; margin-right: 10px;"></span> <span class="val-carrier-shortname"></span></div>
             </div>
-            
-        </div>
+                </div>
+            </section>
+        </main>
     </div>
 
     <script>
-        // --- КОНФІГУРАЦІЯ FIREBASE ---
+        // --- РљРћРќР¤Р†Р“РЈР РђР¦Р†РЇ FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyDKMMyRyf8ZRxW0cE-c5vN4RhGn3V_h__E",
             authDomain: "grusha-7af5b.firebaseapp.com",
@@ -550,69 +514,87 @@
             appId: "1:85563651562:web:2f2cf06be043266ca92e93"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        let db = null;
+        if (window.firebase?.firestore) {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+        }
         
         let allTripsFromCloud = []; 
         let currentRecordFbId = null; 
-        let isInitialLoad = true;
+        let archiveState = "loading";
+        let isSaving = false;
+        let manualWords = null;
 
-        // --- ДАНІ ПЕРЕВІЗНИКІВ ---
+        // --- Р”РђРќР† РџР•Р Р•Р’Р†Р—РќРРљР†Р’ ---
         const carriersData = {
             'gurzhii': {
-                fullName: 'Фізична особа підприємець Гуржій Віталій Васильович',
-                shortName: 'Гуржій Віталій Васильович',
-                contract: 'Договір № 12/01/2026/3 від 12.01.2026',
+                fullName: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р° РїС–РґРїСЂРёС”РјРµС†СЊ Р“СѓСЂР¶С–Р№ Р’С–С‚Р°Р»С–Р№ Р’Р°СЃРёР»СЊРѕРІРёС‡',
+                shortName: 'Р“СѓСЂР¶С–Р№ Р’С–С‚Р°Р»С–Р№ Р’Р°СЃРёР»СЊРѕРІРёС‡',
+                contract: 'Р”РѕРіРѕРІС–СЂ в„– 12/01/2026/3 РІС–Рґ 12.01.2026',
                 car: 'Mercedes-Benz CA6731HP',
-                reqAct: 'Фізична особа-підприємець Гуржій Віталій<br>Васильович, Адреса: 19845, Черкаська обл.,<br>Драбівський р-н, с. Білоусівка, вул.<br>Хмельницького, 28<br>Ідентифікаційний код 2596312873, р/р<br>UA273052990000026001041609871 в АТ КБ<br>«Приватбанк» м. Черкаси,<br>МФО 305299, Св-во Серія Б № 147556 є<br>платником єдиного податку',
-                reqInv: 'Фізична особа-підприємець Гуржій Віталій Васильович, Адреса: 19845, Черкаська обл.,<br>Драбівський р-н, с. Білоусівка, вул. Хмельницького, 28<br>Ідентифікаційний код 2596312873, р/р UA273052990000026001041609871 в АТ КБ<br>«Приватбанк» м. Черкаси,<br>МФО 305299, Св-во Серія Б № 147556 є платником єдиного податку'
+                reqAct: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р°-РїС–РґРїСЂРёС”РјРµС†СЊ Р“СѓСЂР¶С–Р№ Р’С–С‚Р°Р»С–Р№<br>Р’Р°СЃРёР»СЊРѕРІРёС‡, РђРґСЂРµСЃР°: 19845, Р§РµСЂРєР°СЃСЊРєР° РѕР±Р».,<br>Р”СЂР°Р±С–РІСЃСЊРєРёР№ СЂ-РЅ, СЃ. Р‘С–Р»РѕСѓСЃС–РІРєР°, РІСѓР».<br>РҐРјРµР»СЊРЅРёС†СЊРєРѕРіРѕ, 28<br>Р†РґРµРЅС‚РёС„С–РєР°С†С–Р№РЅРёР№ РєРѕРґ 2596312873, СЂ/СЂ<br>UA273052990000026001041609871 РІ РђРў РљР‘<br>В«РџСЂРёРІР°С‚Р±Р°РЅРєВ» Рј. Р§РµСЂРєР°СЃРё,<br>РњР¤Рћ 305299, РЎРІ-РІРѕ РЎРµСЂС–СЏ Р‘ в„– 147556 С”<br>РїР»Р°С‚РЅРёРєРѕРј С”РґРёРЅРѕРіРѕ РїРѕРґР°С‚РєСѓ',
+                reqInv: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р°-РїС–РґРїСЂРёС”РјРµС†СЊ Р“СѓСЂР¶С–Р№ Р’С–С‚Р°Р»С–Р№ Р’Р°СЃРёР»СЊРѕРІРёС‡, РђРґСЂРµСЃР°: 19845, Р§РµСЂРєР°СЃСЊРєР° РѕР±Р».,<br>Р”СЂР°Р±С–РІСЃСЊРєРёР№ СЂ-РЅ, СЃ. Р‘С–Р»РѕСѓСЃС–РІРєР°, РІСѓР». РҐРјРµР»СЊРЅРёС†СЊРєРѕРіРѕ, 28<br>Р†РґРµРЅС‚РёС„С–РєР°С†С–Р№РЅРёР№ РєРѕРґ 2596312873, СЂ/СЂ UA273052990000026001041609871 РІ РђРў РљР‘<br>В«РџСЂРёРІР°С‚Р±Р°РЅРєВ» Рј. Р§РµСЂРєР°СЃРё,<br>РњР¤Рћ 305299, РЎРІ-РІРѕ РЎРµСЂС–СЏ Р‘ в„– 147556 С” РїР»Р°С‚РЅРёРєРѕРј С”РґРёРЅРѕРіРѕ РїРѕРґР°С‚РєСѓ'
             },
             'fedorov': {
-                fullName: 'Фізична особа підприємець Федоров Станіслав Анатолійович',
-                shortName: 'Федоров Станіслав Анатолійович',
-                contract: 'Договір № 12/01/2026/2 від 12.01.2025',
+                fullName: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р° РїС–РґРїСЂРёС”РјРµС†СЊ Р¤РµРґРѕСЂРѕРІ РЎС‚Р°РЅС–СЃР»Р°РІ РђРЅР°С‚РѕР»С–Р№РѕРІРёС‡',
+                shortName: 'Р¤РµРґРѕСЂРѕРІ РЎС‚Р°РЅС–СЃР»Р°РІ РђРЅР°С‚РѕР»С–Р№РѕРІРёС‡',
+                contract: 'Р”РѕРіРѕРІС–СЂ в„– 12/01/2026/2 РІС–Рґ 12.01.2025',
                 car: 'Mercedes-Benz CA6627IM',
-                reqAct: 'Фізична особа-підприємець Федоров Станіслав<br>Анатолійович<br>РНОКПП 2473302011,тел 0972978285 адреса:<br>Україна, 18029, Черкаська обл., місто Черкаси, вул.<br>Генерала Путейка, будинок 54, квартира 60,<br>Р/р UA693052990000026003031603788 в АТ КБ<br>"Приватбанк" МФО 305299, Свідоцтво платника<br>єдиного податку Серія Б № 160134',
-                reqInv: 'Фізична особа-підприємець Федоров Станіслав Анатолійович<br>РНОКПП 2473302011,тел 0972978285 адреса: Україна, 18029, Черкаська обл., місто Черкаси,<br>вул. Генерала Путейка, будинок 54, квартира 60,<br>Р/р UA693052990000026003031603788 в АТ КБ "Приватбанк" МФО 305299, Свідоцтво<br>платника єдиного податку Серія Б № 160134'
+                reqAct: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р°-РїС–РґРїСЂРёС”РјРµС†СЊ Р¤РµРґРѕСЂРѕРІ РЎС‚Р°РЅС–СЃР»Р°РІ<br>РђРЅР°С‚РѕР»С–Р№РѕРІРёС‡<br>Р РќРћРљРџРџ 2473302011,С‚РµР» 0972978285 Р°РґСЂРµСЃР°:<br>РЈРєСЂР°С—РЅР°, 18029, Р§РµСЂРєР°СЃСЊРєР° РѕР±Р»., РјС–СЃС‚Рѕ Р§РµСЂРєР°СЃРё, РІСѓР».<br>Р“РµРЅРµСЂР°Р»Р° РџСѓС‚РµР№РєР°, Р±СѓРґРёРЅРѕРє 54, РєРІР°СЂС‚РёСЂР° 60,<br>Р /СЂ UA693052990000026003031603788 РІ РђРў РљР‘<br>"РџСЂРёРІР°С‚Р±Р°РЅРє" РњР¤Рћ 305299, РЎРІС–РґРѕС†С‚РІРѕ РїР»Р°С‚РЅРёРєР°<br>С”РґРёРЅРѕРіРѕ РїРѕРґР°С‚РєСѓ РЎРµСЂС–СЏ Р‘ в„– 160134',
+                reqInv: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р°-РїС–РґРїСЂРёС”РјРµС†СЊ Р¤РµРґРѕСЂРѕРІ РЎС‚Р°РЅС–СЃР»Р°РІ РђРЅР°С‚РѕР»С–Р№РѕРІРёС‡<br>Р РќРћРљРџРџ 2473302011,С‚РµР» 0972978285 Р°РґСЂРµСЃР°: РЈРєСЂР°С—РЅР°, 18029, Р§РµСЂРєР°СЃСЊРєР° РѕР±Р»., РјС–СЃС‚Рѕ Р§РµСЂРєР°СЃРё,<br>РІСѓР». Р“РµРЅРµСЂР°Р»Р° РџСѓС‚РµР№РєР°, Р±СѓРґРёРЅРѕРє 54, РєРІР°СЂС‚РёСЂР° 60,<br>Р /СЂ UA693052990000026003031603788 РІ РђРў РљР‘ "РџСЂРёРІР°С‚Р±Р°РЅРє" РњР¤Рћ 305299, РЎРІС–РґРѕС†С‚РІРѕ<br>РїР»Р°С‚РЅРёРєР° С”РґРёРЅРѕРіРѕ РїРѕРґР°С‚РєСѓ РЎРµСЂС–СЏ Р‘ в„– 160134'
             },
             'muzhanovskyi': {
-                fullName: 'Фізична особа підприємець Мужановський Валентин Леонгінович',
-                shortName: 'Мужановський Валентин Леонгінович',
-                contract: 'Договір № 15/01/2026 від 15.01.2026',
+                fullName: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р° РїС–РґРїСЂРёС”РјРµС†СЊ РњСѓР¶Р°РЅРѕРІСЃСЊРєРёР№ Р’Р°Р»РµРЅС‚РёРЅ Р›РµРѕРЅРіС–РЅРѕРІРёС‡',
+                shortName: 'РњСѓР¶Р°РЅРѕРІСЃСЊРєРёР№ Р’Р°Р»РµРЅС‚РёРЅ Р›РµРѕРЅРіС–РЅРѕРІРёС‡',
+                contract: 'Р”РѕРіРѕРІС–СЂ в„– 15/01/2026 РІС–Рґ 15.01.2026',
                 car: 'Renault Premium 420 CA6250IH',
-                reqAct: 'Фізична особа-підприємець Мужановський<br>Валентин Леонгінович Адреса: 18000, Черкаська<br>обл., м. Черкаси, вул. Руставі, буд. 11, кв. 64,<br>ЄДРПОУ 2878206950, IBAN<br>UA533220010000026005320051438 АТ<br>"УНІВЕРСАЛ БАНК", Тел. 0678926170 Єдиний<br>податок',
-                reqInv: 'Фізична особа-підприємець Мужановський Валентин Леонгінович Адреса: 18000, Черкаська<br>обл., м. Черкаси, вул. Руставі, буд. 11, кв. 64, ЄДРПОУ 2878206950, IBAN<br>UA533220010000026005320051438 АТ "УНІВЕРСАЛ БАНК", Тел. 0678926170 Єдиний<br>податок'
+                reqAct: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р°-РїС–РґРїСЂРёС”РјРµС†СЊ РњСѓР¶Р°РЅРѕРІСЃСЊРєРёР№<br>Р’Р°Р»РµРЅС‚РёРЅ Р›РµРѕРЅРіС–РЅРѕРІРёС‡ РђРґСЂРµСЃР°: 18000, Р§РµСЂРєР°СЃСЊРєР°<br>РѕР±Р»., Рј. Р§РµСЂРєР°СЃРё, РІСѓР». Р СѓСЃС‚Р°РІС–, Р±СѓРґ. 11, РєРІ. 64,<br>Р„Р”Р РџРћРЈ 2878206950, IBAN<br>UA533220010000026005320051438 РђРў<br>"РЈРќР†Р’Р•Р РЎРђР› Р‘РђРќРљ", РўРµР». 0678926170 Р„РґРёРЅРёР№<br>РїРѕРґР°С‚РѕРє',
+                reqInv: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р°-РїС–РґРїСЂРёС”РјРµС†СЊ РњСѓР¶Р°РЅРѕРІСЃСЊРєРёР№ Р’Р°Р»РµРЅС‚РёРЅ Р›РµРѕРЅРіС–РЅРѕРІРёС‡ РђРґСЂРµСЃР°: 18000, Р§РµСЂРєР°СЃСЊРєР°<br>РѕР±Р»., Рј. Р§РµСЂРєР°СЃРё, РІСѓР». Р СѓСЃС‚Р°РІС–, Р±СѓРґ. 11, РєРІ. 64, Р„Р”Р РџРћРЈ 2878206950, IBAN<br>UA533220010000026005320051438 РђРў "РЈРќР†Р’Р•Р РЎРђР› Р‘РђРќРљ", РўРµР». 0678926170 Р„РґРёРЅРёР№<br>РїРѕРґР°С‚РѕРє'
             }
         };
 
-        // --- СИНХРОНІЗАЦІЯ З FIREBASE ---
-        db.collection("trips").onSnapshot((snapshot) => {
-            document.getElementById('fb_status').innerHTML = "🟢 Синхронізовано з хмарою";
-            
-            allTripsFromCloud = [];
-            snapshot.forEach((doc) => {
-                allTripsFromCloud.push({ fbId: doc.id, ...doc.data() });
-            });
+        // --- РЎРРќРҐР РћРќР†Р—РђР¦Р†РЇ Р— FIREBASE ---
+        function setArchiveStatus(state, message) {
+            archiveState = state;
+            const status = document.getElementById('fb_status');
+            status.dataset.state = state;
+            status.textContent = message;
+            document.querySelector('.btn-save').disabled = state !== "ready" || isSaving;
+        }
 
-            updateRouteSuggestions();
-            updateCarSuggestions();
-            renderSavedList();
-
-            if (isInitialLoad) {
-                isInitialLoad = false;
-                createNewRecord(); 
+        function connectArchive() {
+            if (!db) {
+                setArchiveStatus("error", "Firestore РЅРµРґРѕСЃС‚СѓРїРЅРёР№");
+                renderSavedList();
+                return;
             }
-        }, (error) => {
-            console.error("Помилка підключення до Firebase: ", error);
-            document.getElementById('fb_status').innerHTML = "🔴 Помилка з'єднання. Перевірте правила безпеки Firestore!";
-            document.getElementById('fb_status').style.color = "red";
-        });
 
-        // --- ЛОГІКА АРХІВУ ТА ФОРМИ ---
+            db.collection("trips").onSnapshot({ includeMetadataChanges: true }, snapshot => {
+                const fromCache = snapshot.metadata.fromCache;
+                const previousNumber = getNextDocumentNumber();
+                setArchiveStatus(fromCache ? "offline" : "ready",
+                    fromCache ? "РћС‡С–РєСѓРІР°РЅРЅСЏ Р·РІвЂ™СЏР·РєСѓ Р· Firestore" : "Firestore РїС–РґРєР»СЋС‡РµРЅРѕ");
+                allTripsFromCloud = snapshot.docs.map(doc => ({ ...doc.data(), fbId: doc.id }));
+                updateRouteSuggestions();
+                updateCarSuggestions();
+                const numberInput = document.getElementById('doc_num');
+                if (!fromCache && !currentRecordFbId && !isSaving &&
+                    !numberInput.dataset.edited && numberInput.value === previousNumber) {
+                    numberInput.value = getNextDocumentNumber();
+                    updateDoc();
+                }
+                renderSavedList();
+            }, error => {
+                console.error("РџРѕРјРёР»РєР° РїС–РґРєР»СЋС‡РµРЅРЅСЏ РґРѕ Firebase:", error);
+                setArchiveStatus("error", "РђСЂС…С–РІ РЅРµРґРѕСЃС‚СѓРїРЅРёР№");
+                renderSavedList();
+            });
+        }
 
         function changeCarrier() {
-            createNewRecord(); 
-            renderSavedList(); 
+            document.getElementById('archive-search').value = "";
+            createNewRecord();
         }
 
         function updateRouteSuggestions() {
@@ -641,7 +623,7 @@
             allTripsFromCloud.forEach(record => {
                 if (record.car && record.car.trim() !== "") {
                     let rawCar = record.car.trim();
-                    if (rawCar.toLowerCase().startsWith('автомобіль ')) {
+                    if (rawCar.toLowerCase().startsWith('Р°РІС‚РѕРјРѕР±С–Р»СЊ ')) {
                         rawCar = rawCar.substring(11).trim();
                     }
                     allCars.add(rawCar);
@@ -678,114 +660,167 @@
 
         function renderSavedList() {
             const container = document.getElementById('saved_list_container');
-            container.innerHTML = '';
-            
-            const carrierKey = document.getElementById('carrier_select').value;
-            let carrierTrips = allTripsFromCloud.filter(t => t.carrier === carrierKey);
-            
-            if(carrierTrips.length === 0) {
-                container.innerHTML = '<div style="color:#888; font-size:13px; text-align:center; padding: 20px;">Архів порожній</div>';
+            container.replaceChildren();
+            const carrier = document.getElementById('carrier_select').value;
+            const query = document.getElementById('archive-search').value.trim().toLocaleLowerCase('uk');
+            const carrierTrips = allTripsFromCloud.filter(record => {
+                const searchText = [record.docNum, record.tripNum, ...(record.routePoints || [])].join(' ');
+                return record.carrier === carrier && searchText.toLocaleLowerCase('uk').includes(query);
+            });
+            carrierTrips.sort((a, b) => extractNumber(b.docNum) - extractNumber(a.docNum));
+
+            if (carrierTrips.length === 0) {
+                const empty = document.createElement('p');
+                empty.className = 'empty-archive';
+                if (archiveState === "ready") {
+                    empty.textContent = query ? "Р—Р° РІР°С€РёРј Р·Р°РїРёС‚РѕРј РЅС–С‡РѕРіРѕ РЅРµ Р·РЅР°Р№РґРµРЅРѕ." : "Р”Р»СЏ С†СЊРѕРіРѕ РїРµСЂРµРІС–Р·РЅРёРєР° С‰Рµ РЅРµРјР°С” СЂРµР№СЃС–РІ.";
+                } else {
+                    empty.textContent = archiveState === "error" ? "РќРµ РІРґР°Р»РѕСЃСЏ Р·Р°РІР°РЅС‚Р°Р¶РёС‚Рё СЂРµР№СЃРё." : "РћС‡С–РєСѓС”РјРѕ РЅР° РґР°РЅС– Р· Firestore.";
+                }
+                container.append(empty);
                 return;
             }
 
-            carrierTrips.sort((a, b) => {
-                return extractNumber(b.docNum) - extractNumber(a.docNum);
-            });
-
-            carrierTrips.forEach(record => {
+            for (const record of carrierTrips) {
                 const item = document.createElement('div');
-                item.className = 'saved-item' + (currentRecordFbId === record.fbId ? ' active' : '');
-                item.onclick = function() { loadRecord(record.fbId); };
+                const active = currentRecordFbId === record.fbId;
+                item.className = active ? 'saved-item active' : 'saved-item';
 
-                const formattedSum = (record.km * record.price).toFixed(2).replace('.', ',');
-                let tripInfo = record.tripNum ? `<div class="item-trip">Рейс: ${record.tripNum}</div>` : '';
+                const open = document.createElement('button');
+                open.type = 'button';
+                open.className = 'item-info';
+                if (active) open.setAttribute('aria-current', 'true');
+                open.onclick = () => {
+                    loadRecord(record.fbId);
+                    focusEditor();
+                };
 
-                item.innerHTML = `
-                    <div class="item-info">
-                        ${tripInfo}
-                        <div class="item-title">№ ${record.docNum || 'Без номеру'} від ${formatDate(record.docDate)}</div>
-                        <div>Сума: <b>${formattedSum} грн</b> (${record.km || 0} км)</div>
-                        <span class="item-route">${(record.routePoints || []).join(' - ')}</span>
-                    </div>
-                    <button class="btn-delete-item" onclick="deleteRecord('${record.fbId}', event)" title="Видалити">❌</button>
-                `;
-                container.appendChild(item);
-            });
+                const sum = (Number(record.km || 0) * Number(record.price || 0)).toFixed(2).replace('.', ',');
+                const route = (record.routePoints || []).join(' в†’ ');
+                const details = [
+                    ['item-title', 'в„– ' + (record.docNum || 'Р±РµР· РЅРѕРјРµСЂР°')],
+                    ['item-trip', record.tripNum],
+                    ['item-meta', [formatDate(record.docDate), sum + ' РіСЂРЅ'].filter(Boolean).join(' В· ')],
+                    ['item-route', route]
+                ];
+                for (const [className, value] of details) {
+                    if (!value) continue;
+                    const line = document.createElement('span');
+                    line.className = className;
+                    line.textContent = value;
+                    if (className === 'item-route') line.title = value;
+                    open.append(line);
+                }
+
+                const remove = document.createElement('button');
+                remove.type = 'button';
+                remove.className = 'btn-delete-item';
+                remove.textContent = 'Г—';
+                remove.setAttribute('aria-label', 'Р’РёРґР°Р»РёС‚Рё СЂРµР№СЃ в„– ' + (record.docNum || 'Р±РµР· РЅРѕРјРµСЂР°'));
+                remove.disabled = archiveState !== "ready";
+                remove.onclick = () => deleteRecord(record.fbId);
+                item.append(open, remove);
+                container.append(item);
+            }
         }
 
-        function saveCurrentRecord() {
-            const docNum = document.getElementById('doc_num').value.trim();
-            const tripNum = document.getElementById('trip_num').value.trim();
-            let car = document.getElementById('car_input').value.trim();
-            const carrierKey = document.getElementById('carrier_select').value;
-            
-            if (car.toLowerCase().startsWith('автомобіль ')) {
-                car = car.substring(11).trim();
-            }
+        function showSaveStatus(message = "", state = "") {
+            const status = document.getElementById('save_status');
+            status.textContent = message;
+            status.dataset.state = state;
+        }
+
+        async function saveCurrentRecord() {
+            if (isSaving || archiveState !== "ready") return;
+            const numberInput = document.getElementById('doc_num');
+            const docNum = numberInput.value.trim();
+            const carrier = document.getElementById('carrier_select').value;
+            const recordId = currentRecordFbId;
 
             if (!docNum) {
-                alert("Помилка! Номер акту не може бути порожнім.");
+                showSaveStatus("Р’РІРµРґС–С‚СЊ РЅРѕРјРµСЂ Р°РєС‚Р° Р№ СЂР°С…СѓРЅРєСѓ.", "error");
+                numberInput.focus();
                 return;
             }
 
-            const isDuplicate = allTripsFromCloud.some(r => r.carrier === carrierKey && r.docNum === docNum && r.fbId !== currentRecordFbId);
-            if (isDuplicate) {
-                alert(`Акт з номером "${docNum}" вже існує в архіві цього перевізника! Збереження скасовано.\nБудь ласка, змініть номер.`);
+            if (allTripsFromCloud.some(record => record.carrier === carrier &&
+                record.docNum === docNum && record.fbId !== recordId)) {
+                showSaveStatus("РўР°РєРёР№ РЅРѕРјРµСЂ СѓР¶Рµ С” РІ Р°СЂС…С–РІС– С†СЊРѕРіРѕ РїРµСЂРµРІС–Р·РЅРёРєР°.", "error");
+                numberInput.focus();
                 return;
             }
 
-            const docDate = document.getElementById('doc_date').value;
-            const km = parseFloat(document.getElementById('km').value) || 0;
-            const price = parseFloat(document.getElementById('price').value) || 0;
-            
-            let routePoints = [];
-            document.querySelectorAll('.route-point').forEach(input => {
-                if (input.value.trim() !== "") routePoints.push(input.value.trim());
-            });
-
+            const timestamp = firebase.firestore.FieldValue.serverTimestamp;
             const tripData = {
-                docNum, tripNum, docDate, car, km, price, routePoints,
-                carrier: carrierKey,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                docNum,
+                tripNum: document.getElementById('trip_num').value.trim(),
+                docDate: document.getElementById('doc_date').value,
+                car: document.getElementById('car_input').value.trim().replace(/^Р°РІС‚РѕРјРѕР±С–Р»СЊ\s+/i, ''),
+                km: Number(document.getElementById('km').value) || 0,
+                price: Number(document.getElementById('price').value) || 0,
+                routePoints: Array.from(document.querySelectorAll('.route-point'), input => input.value.trim()).filter(Boolean),
+                sumWords: manualWords,
+                carrier,
+                updatedAt: timestamp()
             };
 
-            const btn = document.querySelector('.btn-save');
-            const originalText = btn.innerText;
-            btn.innerText = "⏳ Збереження...";
-            btn.disabled = true;
+            const button = document.querySelector('.btn-save');
+            const fields = document.querySelectorAll('.editor-fields fieldset');
+            const newButton = document.querySelector('.btn-new');
+            isSaving = true;
+            button.disabled = true;
+            newButton.disabled = true;
+            fields.forEach(field => { field.disabled = true; });
+            showSaveStatus("Р—Р±РµСЂРµР¶РµРЅРЅСЏ Сѓ FirestoreвЂ¦");
 
-            if (currentRecordFbId) {
-                db.collection("trips").doc(currentRecordFbId).update(tripData).then(() => {
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                }).catch(err => alert("Помилка: " + err));
-            } else {
-                tripData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                db.collection("trips").add(tripData).then(docRef => {
-                    currentRecordFbId = docRef.id;
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                }).catch(err => alert("Помилка: " + err));
+            try {
+                const trips = db.collection("trips");
+                if (recordId) {
+                    await trips.doc(recordId).update(tripData);
+                } else {
+                    const ref = await trips.add({ ...tripData, createdAt: timestamp() });
+                    currentRecordFbId = ref.id;
+                }
+                document.getElementById('editor-title').textContent = "Р РµРґР°РіСѓРІР°РЅРЅСЏ СЂРµР№СЃСѓ";
+                showSaveStatus("Р РµР№СЃ Р·Р±РµСЂРµР¶РµРЅРѕ РІ Р°СЂС…С–РІС–.", "ready");
+                renderSavedList();
+            } catch (error) {
+                console.error("РџРѕРјРёР»РєР° Р·Р±РµСЂРµР¶РµРЅРЅСЏ:", error);
+                showSaveStatus("РќРµ РІРґР°Р»РѕСЃСЏ Р·Р±РµСЂРµРіС‚Рё СЂРµР№СЃ. РЎРїСЂРѕР±СѓР№С‚Рµ С‰Рµ СЂР°Р·.", "error");
+            } finally {
+                isSaving = false;
+                button.disabled = archiveState !== "ready";
+                newButton.disabled = false;
+                fields.forEach(field => { field.disabled = false; });
             }
+        }
+
+        function focusEditor() {
+            document.getElementById('doc_num').focus({ preventScroll: true });
+            document.getElementById('trip-editor').scrollIntoView({ block: 'nearest' });
         }
 
         function loadRecord(fbId) {
+            if (isSaving) return;
             let record = allTripsFromCloud.find(r => r.fbId === fbId);
             
             if (record) {
                 currentRecordFbId = record.fbId;
+                manualWords = typeof record.sumWords === 'string' ? record.sumWords : null;
+                showSaveStatus();
+                document.getElementById('editor-title').textContent = "Р РµРґР°РіСѓРІР°РЅРЅСЏ СЂРµР№СЃСѓ";
                 document.getElementById('doc_num').value = record.docNum || "";
                 document.getElementById('trip_num').value = record.tripNum || "";
                 document.getElementById('doc_date').value = record.docDate || "";
                 
                 let loadedCar = record.car || carriersData[record.carrier || 'gurzhii'].car || "";
-                if (loadedCar.toLowerCase().startsWith('автомобіль ')) {
+                if (loadedCar.toLowerCase().startsWith('Р°РІС‚РѕРјРѕР±С–Р»СЊ ')) {
                     loadedCar = loadedCar.substring(11).trim();
                 }
                 document.getElementById('car_input').value = loadedCar;
                 
-                document.getElementById('km').value = record.km || "";
-                document.getElementById('price').value = record.price || "";
+                document.getElementById('km').value = record.km ?? "";
+                document.getElementById('price').value = record.price ?? "";
 
                 const container = document.getElementById('route_inputs');
                 container.innerHTML = '';
@@ -800,8 +835,7 @@
             }
         }
 
-        function createNewRecord() {
-            currentRecordFbId = null;
+        function getNextDocumentNumber() {
             const carrierKey = document.getElementById('carrier_select').value;
             let carrierTrips = allTripsFromCloud.filter(t => t.carrier === carrierKey);
             
@@ -817,7 +851,19 @@
                 nextNum = generateNextNumber(maxNumRecord.docNum);
             }
 
-            document.getElementById('doc_num').value = nextNum;
+            return nextNum;
+        }
+
+        function createNewRecord(moveFocus = false) {
+            if (isSaving) return;
+            currentRecordFbId = null;
+            manualWords = null;
+            showSaveStatus();
+            document.getElementById('editor-title').textContent = "РќРѕРІРёР№ СЂРµР№СЃ";
+            const carrierKey = document.getElementById('carrier_select').value;
+            const numberInput = document.getElementById('doc_num');
+            delete numberInput.dataset.edited;
+            numberInput.value = getNextDocumentNumber();
             document.getElementById('trip_num').value = "";
             document.getElementById('doc_date').value = ""; 
             document.getElementById('car_input').value = carriersData[carrierKey].car; 
@@ -830,17 +876,18 @@
             
             updateDoc();
             renderSavedList();
+            if (moveFocus) focusEditor();
         }
 
-        function deleteRecord(fbId, event) {
-            event.stopPropagation();
-            if(confirm("Ви дійсно хочете видалити цей запис із хмарного архіву назавжди?")) {
+        function deleteRecord(fbId) {
+            if (isSaving || archiveState !== "ready") return;
+            if(confirm("Р’Рё РґС–Р№СЃРЅРѕ С…РѕС‡РµС‚Рµ РІРёРґР°Р»РёС‚Рё С†РµР№ Р·Р°РїРёСЃ С–Р· С…РјР°СЂРЅРѕРіРѕ Р°СЂС…С–РІСѓ РЅР°Р·Р°РІР¶РґРё?")) {
                 db.collection("trips").doc(fbId).delete().then(() => {
                     if (currentRecordFbId === fbId) {
                         currentRecordFbId = null;
                         createNewRecord();
                     }
-                }).catch(err => alert("Помилка видалення: " + err));
+                }).catch(err => alert("РџРѕРјРёР»РєР° РІРёРґР°Р»РµРЅРЅСЏ: " + err));
             }
         }
 
@@ -852,17 +899,17 @@
             });
 
             if (points.length < 2) {
-                alert("Для прокладання маршруту потрібно мінімум 2 точки!");
+                alert("Р”Р»СЏ РїСЂРѕРєР»Р°РґР°РЅРЅСЏ РјР°СЂС€СЂСѓС‚Сѓ РїРѕС‚СЂС–Р±РЅРѕ РјС–РЅС–РјСѓРј 2 С‚РѕС‡РєРё!");
                 return;
             }
 
             const url = `https://www.google.com/maps/dir/${points.join('/')}`;
-            window.open(url, '_blank');
+            window.open(url, '_blank', 'noopener,noreferrer');
         }
 
-        // --- ДОПОМІЖНІ ФУНКЦІЇ ДЛЯ РЕНДЕРУ ---
+        // --- Р”РћРџРћРњР†Р–РќР† Р¤РЈРќРљР¦Р†Р‡ Р”Р›РЇ Р Р•РќР”Р•Р РЈ ---
 
-        function addRoutePoint(value = "") {
+        function addRoutePoint(value = "", moveFocus = false) {
             const container = document.getElementById('route_inputs');
             const row = document.createElement('div');
             row.className = 'route-row';
@@ -871,29 +918,42 @@
             input.type = 'text';
             input.className = 'route-point';
             input.setAttribute('list', 'route_suggestions');
-            input.placeholder = `Точка ${container.children.length + 1} (напр. м.Черкаси, вул. Хіміків 84)`;
+            input.placeholder = 'РњС–СЃС‚Рѕ, РІСѓР»РёС†СЏ, РЅРѕРјРµСЂ Р±СѓРґРёРЅРєСѓ';
             input.value = value;
             input.oninput = updateDoc;
             
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'btn-remove';
-            btn.title = 'Видалити точку';
-            btn.innerHTML = '❌';
+            btn.title = 'Р’РёРґР°Р»РёС‚Рё С‚РѕС‡РєСѓ';
+            btn.textContent = 'Г—';
             btn.onclick = function() { removeRoutePoint(btn); };
             
             row.appendChild(input);
             row.appendChild(btn);
             container.appendChild(row);
+            labelRoutePoints();
+            if (moveFocus) input.focus();
+        }
+
+        function labelRoutePoints() {
+            document.querySelectorAll('.route-row').forEach((row, index) => {
+                row.querySelector('input').setAttribute('aria-label', 'РўРѕС‡РєР° РјР°СЂС€СЂСѓС‚Сѓ ' + (index + 1));
+                row.querySelector('button').setAttribute('aria-label', 'Р’РёРґР°Р»РёС‚Рё С‚РѕС‡РєСѓ ' + (index + 1));
+            });
         }
 
         function removeRoutePoint(button) {
             const container = document.getElementById('route_inputs');
             if (container.children.length > 1) {
-                button.parentElement.remove();
+                const row = button.parentElement;
+                const nextRow = row.nextElementSibling || row.previousElementSibling;
+                row.remove();
+                labelRoutePoints();
+                nextRow.querySelector('input').focus();
                 updateDoc();
             } else {
-                alert("Має бути хоча б одна точка маршруту!");
+                alert("РњР°С” Р±СѓС‚Рё С…РѕС‡Р° Р± РѕРґРЅР° С‚РѕС‡РєР° РјР°СЂС€СЂСѓС‚Сѓ!");
             }
         }
 
@@ -912,10 +972,10 @@
         }
 
         function numberToWordsUa(number, isFemaleCurrency = true) {
-            const units = ['', 'один', 'два', 'три', 'чотири', 'п\'ять', 'шість', 'сім', 'вісім', 'дев\'ять', 'десять', 'одинадцять', 'дванадцять', 'тринадцять', 'чотирнадцять', 'п\'ятнадцять', 'шістнадцять', 'сімнадцять', 'вісімнадцять', 'дев\'ятнадцять'];
-            const unitsFemale = ['', 'одна', 'дві', 'три', 'чотири', 'п\'ять', 'шість', 'сім', 'вісім', 'дев\'ять'];
-            const tens = ['', '', 'двадцять', 'тридцять', 'сорок', 'п\'ятдесят', 'шістдесят', 'сімдесят', 'вісімдесят', 'дев\'яносто'];
-            const hundreds = ['', 'сто', 'двісті', 'триста', 'чотириста', 'п\'ятсот', 'шістсот', 'сімсот', 'вісімсот', 'дев\'ятсот'];
+            const units = ['', 'РѕРґРёРЅ', 'РґРІР°', 'С‚СЂРё', 'С‡РѕС‚РёСЂРё', 'Рї\'СЏС‚СЊ', 'С€С–СЃС‚СЊ', 'СЃС–Рј', 'РІС–СЃС–Рј', 'РґРµРІ\'СЏС‚СЊ', 'РґРµСЃСЏС‚СЊ', 'РѕРґРёРЅР°РґС†СЏС‚СЊ', 'РґРІР°РЅР°РґС†СЏС‚СЊ', 'С‚СЂРёРЅР°РґС†СЏС‚СЊ', 'С‡РѕС‚РёСЂРЅР°РґС†СЏС‚СЊ', 'Рї\'СЏС‚РЅР°РґС†СЏС‚СЊ', 'С€С–СЃС‚РЅР°РґС†СЏС‚СЊ', 'СЃС–РјРЅР°РґС†СЏС‚СЊ', 'РІС–СЃС–РјРЅР°РґС†СЏС‚СЊ', 'РґРµРІ\'СЏС‚РЅР°РґС†СЏС‚СЊ'];
+            const unitsFemale = ['', 'РѕРґРЅР°', 'РґРІС–', 'С‚СЂРё', 'С‡РѕС‚РёСЂРё', 'Рї\'СЏС‚СЊ', 'С€С–СЃС‚СЊ', 'СЃС–Рј', 'РІС–СЃС–Рј', 'РґРµРІ\'СЏС‚СЊ'];
+            const tens = ['', '', 'РґРІР°РґС†СЏС‚СЊ', 'С‚СЂРёРґС†СЏС‚СЊ', 'СЃРѕСЂРѕРє', 'Рї\'СЏС‚РґРµСЃСЏС‚', 'С€С–СЃС‚РґРµСЃСЏС‚', 'СЃС–РјРґРµСЃСЏС‚', 'РІС–СЃС–РјРґРµСЃСЏС‚', 'РґРµРІ\'СЏРЅРѕСЃС‚Рѕ'];
+            const hundreds = ['', 'СЃС‚Рѕ', 'РґРІС–СЃС‚С–', 'С‚СЂРёСЃС‚Р°', 'С‡РѕС‚РёСЂРёСЃС‚Р°', 'Рї\'СЏС‚СЃРѕС‚', 'С€С–СЃС‚СЃРѕС‚', 'СЃС–РјСЃРѕС‚', 'РІС–СЃС–РјСЃРѕС‚', 'РґРµРІ\'СЏС‚СЃРѕС‚'];
             if (number === 0 || isNaN(number)) return '';
 
             function getGroupWords(num, isFemale) {
@@ -933,20 +993,20 @@
             if (m > 0) {
                 result.push(getGroupWords(m, false));
                 let remM = m % 10; let remM100 = m % 100;
-                if (remM100 >= 11 && remM100 <= 14) result.push('мільйонів');
-                else if (remM === 1) result.push('мільйон');
-                else if (remM >= 2 && remM <= 4) result.push('мільйони');
-                else result.push('мільйонів');
+                if (remM100 >= 11 && remM100 <= 14) result.push('РјС–Р»СЊР№РѕРЅС–РІ');
+                else if (remM === 1) result.push('РјС–Р»СЊР№РѕРЅ');
+                else if (remM >= 2 && remM <= 4) result.push('РјС–Р»СЊР№РѕРЅРё');
+                else result.push('РјС–Р»СЊР№РѕРЅС–РІ');
                 intPart %= 1000000;
             }
             let th = Math.floor(intPart / 1000);
             if (th > 0) {
                 result.push(getGroupWords(th, true));
                 let remTh = th % 10; let remTh100 = th % 100;
-                if (remTh100 >= 11 && remTh100 <= 14) result.push('тисяч');
-                else if (remTh === 1) result.push('тисяча');
-                else if (remTh >= 2 && remTh <= 4) result.push('тисячі');
-                else result.push('тисяч');
+                if (remTh100 >= 11 && remTh100 <= 14) result.push('С‚РёСЃСЏС‡');
+                else if (remTh === 1) result.push('С‚РёСЃСЏС‡Р°');
+                else if (remTh >= 2 && remTh <= 4) result.push('С‚РёСЃСЏС‡С–');
+                else result.push('С‚РёСЃСЏС‡');
                 intPart %= 1000;
             }
             if (intPart > 0 || result.length === 0) { 
@@ -964,16 +1024,17 @@
             if(centsStr.length === 1) centsStr += '0';
             
             let words = numberToWordsUa(intPart, true); 
-            let currency = 'гривень';
+            let currency = 'РіСЂРёРІРµРЅСЊ';
             let rem100 = intPart % 100; let rem10 = intPart % 10;
-            if (rem100 >= 11 && rem100 <= 14) currency = 'гривень';
-            else if (rem10 === 1) currency = 'гривня';
-            else if (rem10 >= 2 && rem10 <= 4) currency = 'гривні';
-            return `${words} ${currency} ${centsStr} коп.`;
+            if (rem100 >= 11 && rem100 <= 14) currency = 'РіСЂРёРІРµРЅСЊ';
+            else if (rem10 === 1) currency = 'РіСЂРёРІРЅСЏ';
+            else if (rem10 >= 2 && rem10 <= 4) currency = 'РіСЂРёРІРЅС–';
+            return `${words} ${currency} ${centsStr} РєРѕРї.`;
         }
 
         function updateDocManualWords() {
-            setElementsText('val-sum-words', document.getElementById('sum_words').value);
+            manualWords = document.getElementById('sum_words').value;
+            setElementsText('val-sum-words', manualWords);
         }
 
         function updateDoc() {
@@ -981,7 +1042,7 @@
             const docDate = formatDate(document.getElementById('doc_date').value);
             
             let carText = document.getElementById('car_input').value.trim();
-            if (carText.toLowerCase().startsWith('автомобіль ')) {
+            if (carText.toLowerCase().startsWith('Р°РІС‚РѕРјРѕР±С–Р»СЊ ')) {
                 carText = carText.substring(11).trim();
             }
             
@@ -996,12 +1057,13 @@
             const km = kmText ? parseFloat(kmText) : 0;
             const price = priceText ? parseFloat(priceText) : 0;
             const sum = km * price;
-            const sumWordsGenerated = getUahWords(sum);
+            const sumWordsGenerated = manualWords ?? getUahWords(sum);
             
             document.getElementById('sum_words').value = sumWordsGenerated;
 
             const priceStr = priceText ? price.toFixed(2).replace('.', ',') : "";
             const sumStr = (kmText || priceText) ? sum.toFixed(2).replace('.', ',') : "";
+            document.getElementById('total-display').value = (sumStr || '0,00') + '\u00a0РіСЂРЅ';
 
             setElementsText('val-doc-num', docNum);
             setElementsText('val-doc-date', docDate);
@@ -1023,8 +1085,39 @@
             setElementsHTML('val-carrier-req-inv', cData.reqInv);
         }
 
-        updateDoc();
-        
+        const previewButtons = document.querySelectorAll('.preview-tabs button');
+        previewButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                previewButtons.forEach(tab => {
+                    const active = tab === button;
+                    tab.setAttribute('aria-pressed', String(active));
+                    document.getElementById(tab.getAttribute('aria-controls')).hidden = !active;
+                });
+            });
+        });
+
+        const paper = document.getElementById('preview-paper');
+        if (window.ResizeObserver) {
+            new ResizeObserver(([entry]) => {
+                const scale = Math.min(1, entry.contentRect.width / (210 * 96 / 25.4));
+                paper.style.setProperty('--paper-scale', scale);
+            }).observe(paper);
+        }
+
+        document.getElementById('doc_num').addEventListener('input', event => {
+            event.target.dataset.edited = 'true';
+        });
+        ['km', 'price'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                manualWords = null;
+                updateDoc();
+            });
+        });
+        document.querySelector('.editor-fields').addEventListener('input', () => showSaveStatus());
+
+        createNewRecord();
+        setArchiveStatus("loading", "РџС–РґРєР»СЋС‡РµРЅРЅСЏ РґРѕ Firestore");
+        connectArchive();
     </script>
 </body>
 </html>
