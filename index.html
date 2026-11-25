@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Р”РѕРєСѓРјРµРЅС‚Рё СЂРµР№СЃС–РІ вЂ” Р°РєС‚Рё С‚Р° СЂР°С…СѓРЅРєРё</title>
+    <title>Документи рейсів — акти та рахунки</title>
     
-    <!-- РџС–РґРєР»СЋС‡РµРЅРЅСЏ Firebase -->
+    <!-- Підключення Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 
@@ -230,20 +230,20 @@
 <body>
     <header class="topbar">
         <a class="brand" href="#trip-editor">
-            <span class="brand-icon" aria-hidden="true">в–¤</span>
-            <span>Р”РѕРєСѓРјРµРЅС‚Рё СЂРµР№СЃС–РІ<small>РђРєС‚Рё С‚Р° СЂР°С…СѓРЅРєРё</small></span>
+            <span class="brand-icon" aria-hidden="true">▤</span>
+            <span>Документи рейсів<small>Акти та рахунки</small></span>
         </a>
-        <div class="connection-status" id="fb_status" role="status" data-state="loading">РџС–РґРєР»СЋС‡РµРЅРЅСЏ РґРѕ Firestore</div>
+        <div class="connection-status" id="fb_status" role="status" data-state="loading">Підключення до Firestore</div>
     </header>
     <datalist id="route_suggestions"></datalist>
     <datalist id="car_suggestions"></datalist>
     <div class="interface-wrapper">
         <aside class="sidebar panel" aria-labelledby="archive-title">
             <div class="panel-heading">
-                <h2 id="archive-title">РђСЂС…С–РІ СЂРµР№СЃС–РІ</h2>
-                <button type="button" class="btn-new" onclick="createNewRecord(true)">пј‹ РќРѕРІРёР№ СЂРµР№СЃ</button>
-                <label class="visually-hidden" for="archive-search">РџРѕС€СѓРє РІ Р°СЂС…С–РІС–</label>
-                <input id="archive-search" type="search" placeholder="РќРѕРјРµСЂ Р°Р±Рѕ РјР°СЂС€СЂСѓС‚" oninput="renderSavedList()">
+                <h2 id="archive-title">Архів рейсів</h2>
+                <button type="button" class="btn-new" onclick="createNewRecord(true)">＋ Новий рейс</button>
+                <label class="visually-hidden" for="archive-search">Пошук в архіві</label>
+                <input id="archive-search" type="search" placeholder="Номер або маршрут" oninput="renderSavedList()">
             </div>
             <div class="saved-list" id="saved_list_container"></div>
         </aside>
@@ -251,251 +251,251 @@
         <main class="main-content">
             <section class="controls panel" id="trip-editor" aria-labelledby="editor-title">
                 <div class="panel-heading editor-heading">
-                    <h1 id="editor-title">РќРѕРІРёР№ СЂРµР№СЃ</h1>
-                    <p>Р—Р°РїРѕРІРЅС–С‚СЊ РґР°РЅС– РґР»СЏ Р°РєС‚Р° Р№ СЂР°С…СѓРЅРєСѓ.</p>
+                    <h1 id="editor-title">Новий рейс</h1>
+                    <p>Заповніть дані для акта й рахунку.</p>
                 </div>
                 <div class="editor-fields">
                     <fieldset>
-                        <legend>Р”Р°РЅС– РґРѕРєСѓРјРµРЅС‚С–РІ</legend>
+                        <legend>Дані документів</legend>
                         <div class="input-group">
                             <div class="full-width">
-                                <label for="carrier_select">РџРµСЂРµРІС–Р·РЅРёРє</label>
+                                <label for="carrier_select">Перевізник</label>
                                 <select id="carrier_select" onchange="changeCarrier()">
-                                    <option value="gurzhii">Р“СѓСЂР¶С–Р№ Р’С–С‚Р°Р»С–Р№ Р’Р°СЃРёР»СЊРѕРІРёС‡</option>
-                                    <option value="fedorov">Р¤РµРґРѕСЂРѕРІ РЎС‚Р°РЅС–СЃР»Р°РІ РђРЅР°С‚РѕР»С–Р№РѕРІРёС‡</option>
-                                    <option value="muzhanovskyi">РњСѓР¶Р°РЅРѕРІСЃСЊРєРёР№ Р’Р°Р»РµРЅС‚РёРЅ Р›РµРѕРЅРіС–РЅРѕРІРёС‡</option>
+                                    <option value="gurzhii">Гуржій Віталій Васильович</option>
+                                    <option value="fedorov">Федоров Станіслав Анатолійович</option>
+                                    <option value="muzhanovskyi">Мужановський Валентин Леонгінович</option>
                                 </select>
                             </div>
                             <div>
-                                <label for="doc_num">в„– Р°РєС‚Р° Р№ СЂР°С…СѓРЅРєСѓ</label>
+                                <label for="doc_num">№ акта й рахунку</label>
                                 <input type="text" id="doc_num" oninput="updateDoc()" required>
                             </div>
                             <div>
-                                <label for="doc_date">Р”Р°С‚Р°</label>
+                                <label for="doc_date">Дата</label>
                                 <input type="date" id="doc_date" oninput="updateDoc()">
                             </div>
                             <div class="full-width">
-                                <label for="trip_num">в„– СЂРµР№СЃСѓ <span class="label-note">Р»РёС€Рµ РґР»СЏ Р°СЂС…С–РІСѓ</span></label>
-                                <input type="text" id="trip_num" placeholder="РќР°РїСЂРёРєР»Р°Рґ, TE-441362">
+                                <label for="trip_num">№ рейсу <span class="label-note">лише для архіву</span></label>
+                                <input type="text" id="trip_num" placeholder="Наприклад, TE-441362">
                             </div>
                             <div class="full-width">
-                                <label for="car_input">РњР°СЂРєР° Р№ РЅРѕРјРµСЂ Р°РІС‚Рѕ</label>
+                                <label for="car_input">Марка й номер авто</label>
                                 <input type="text" id="car_input" list="car_suggestions" oninput="updateDoc()">
                             </div>
                         </div>
                     </fieldset>
                     <fieldset>
-                        <legend>РњР°СЂС€СЂСѓС‚</legend>
+                        <legend>Маршрут</legend>
                         <div id="route_inputs"></div>
                         <div class="route-actions">
-                            <button type="button" onclick="addRoutePoint('', true)">пј‹ Р”РѕРґР°С‚Рё С‚РѕС‡РєСѓ</button>
-                            <button type="button" onclick="openGoogleMaps()">Google Maps в†—</button>
+                            <button type="button" onclick="addRoutePoint('', true)">＋ Додати точку</button>
+                            <button type="button" onclick="openGoogleMaps()">Google Maps ↗</button>
                         </div>
                     </fieldset>
                     <fieldset>
-                        <legend>Р’Р°СЂС‚С–СЃС‚СЊ РїРµСЂРµРІРµР·РµРЅРЅСЏ</legend>
+                        <legend>Вартість перевезення</legend>
                         <div class="input-group">
                             <div>
-                                <label for="km">Р’С–РґСЃС‚Р°РЅСЊ, РєРј</label>
+                                <label for="km">Відстань, км</label>
                                 <input type="number" id="km" step="any" inputmode="decimal" oninput="updateDoc()">
                             </div>
                             <div>
-                                <label for="price">РўР°СЂРёС„, РіСЂРЅ/РєРј</label>
+                                <label for="price">Тариф, грн/км</label>
                                 <input type="number" id="price" step="0.01" inputmode="decimal" oninput="updateDoc()">
                             </div>
                             <div class="full-width">
-                                <label for="sum_words">РЎСѓРјР° СЃР»РѕРІР°РјРё</label>
+                                <label for="sum_words">Сума словами</label>
                                 <input type="text" id="sum_words" oninput="updateDocManualWords()">
                             </div>
                         </div>
-                        <div class="sum-row"><span>Р Р°Р·РѕРј Р±РµР· РџР”Р’</span><output id="total-display" for="km price">0,00В РіСЂРЅ</output></div>
+                        <div class="sum-row"><span>Разом без ПДВ</span><output id="total-display" for="km price">0,00 грн</output></div>
                     </fieldset>
                 </div>
                 <div class="editor-footer">
-                    <button type="button" class="btn-save" onclick="saveCurrentRecord()">Р—Р±РµСЂРµРіС‚Рё РІ Р°СЂС…С–РІ</button>
-                    <button type="button" onclick="window.print()">Р”СЂСѓРє / PDF</button>
+                    <button type="button" class="btn-save" onclick="saveCurrentRecord()">Зберегти в архів</button>
+                    <button type="button" onclick="window.print()">Друк / PDF</button>
                     <p id="save_status" class="save-status" role="status"></p>
                 </div>
             </section>
 
             <section class="preview panel" aria-labelledby="preview-title">
                 <div class="panel-heading preview-heading">
-                    <h2 id="preview-title">РџРµСЂРµРґРїРµСЂРµРіР»СЏРґ</h2>
-                    <div class="preview-tabs" role="group" aria-label="РЎС‚РѕСЂС–РЅРєРё РґРѕРєСѓРјРµРЅС‚С–РІ">
-                        <button type="button" aria-controls="act-one" aria-pressed="true">РђРєС‚ 1</button>
-                        <button type="button" aria-controls="act-two" aria-pressed="false">РђРєС‚ 2</button>
-                        <button type="button" aria-controls="invoice" aria-pressed="false">Р Р°С…СѓРЅРѕРє</button>
+                    <h2 id="preview-title">Передперегляд</h2>
+                    <div class="preview-tabs" role="group" aria-label="Сторінки документів">
+                        <button type="button" aria-controls="act-one" aria-pressed="true">Акт 1</button>
+                        <button type="button" aria-controls="act-two" aria-pressed="false">Акт 2</button>
+                        <button type="button" aria-controls="invoice" aria-pressed="false">Рахунок</button>
                     </div>
                 </div>
                 <div class="preview-paper" id="preview-paper">
-            <!-- РЎРўРћР Р†РќРљРђ 1: РђРљРў (РљРѕРїС–СЏ 1) -->
+            <!-- СТОРІНКА 1: АКТ (Копія 1) -->
             <div class="document" id="act-one">
                 <div class="doc-header">
-                    РђРљРў РЅР°РґР°РЅРЅСЏ РїРѕСЃР»СѓРі в„– <span class="val-doc-num"></span> РІС–Рґ <span class="val-doc-date"></span>
+                    АКТ надання послуг № <span class="val-doc-num"></span> від <span class="val-doc-date"></span>
                 </div>
                 <div class="preamble">
-                    РњРё, С‰Рѕ РЅРёР¶С‡Рµ РїС–РґРїРёСЃР°Р»РёСЃСЏ, РїСЂРµРґСЃС‚Р°РІРЅРёРє Р—Р°РјРѕРІРЅРёРєР° РўРѕРІР°СЂРёСЃС‚РІРѕ Р· РѕР±РјРµР¶РµРЅРѕСЋ РІС–РґРїРѕРІС–РґР°Р»СЊРЅС–СЃС‚СЋ "Р¤С–СЂРјР° Р•СЂС–РґРѕРЅ", РІ РѕСЃРѕР±С– РґРёСЂРµРєС‚РѕСЂР° РљРѕРїР°РЅРёС†С– Р†РіРѕСЂСЏ РћР»РµРіРѕРІРёС‡Р°, Р· РѕРґРЅРѕРіРѕ Р±РѕРєСѓ, С– РїСЂРµРґСЃС‚Р°РІРЅРёРє "Р’РёРєРѕРЅР°РІС†СЏ" <span class="val-carrier-fullname"></span>, Р· С–РЅС€РѕРіРѕ Р±РѕРєСѓ, СЃРєР»Р°Р»Рё С†РµР№ Р°РєС‚ РїСЂРѕ С‚Рµ, С‰Рѕ РЅР° РїС–РґСЃС‚Р°РІС– РЅР°РІРµРґРµРЅРёС… РґРѕРєСѓРјРµРЅС‚С–РІ:
+                    Ми, що нижче підписалися, представник Замовника Товариство з обмеженою відповідальністю "Фірма Ерідон", в особі директора Копаниці Ігоря Олеговича, з одного боку, і представник "Виконавця" <span class="val-carrier-fullname"></span>, з іншого боку, склали цей акт про те, що на підставі наведених документів:
                 </div>
                 <div class="doc-meta">
-                    Р Р°С…СѓРЅРѕРє в„– <span class="val-doc-num"></span> РІС–Рґ <span class="val-doc-date"></span><br>
+                    Рахунок № <span class="val-doc-num"></span> від <span class="val-doc-date"></span><br>
                     <span class="val-contract"></span><br>
-                    РђРІС‚РѕРјРѕР±С–Р»СЊ <span class="val-car"></span>
+                    Автомобіль <span class="val-car"></span>
                 </div>
-                <div>Р’РёРєРѕРЅР°РІС†РµРј Р±СѓР»Рё РІРёРєРѕРЅР°РЅС– РЅР°СЃС‚СѓРїРЅС– РїРѕСЃР»СѓРіРё (РЅР°РґР°РЅС– С‚Р°РєС– РїРѕСЃР»СѓРіРё):</div>
+                <div>Виконавцем були виконані наступні послуги (надані такі послуги):</div>
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 5%;">в„–</th>
-                            <th style="width: 55%;">РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ СЂРѕР±С–С‚, РїРѕСЃР»СѓРі</th>
-                            <th style="width: 5%;">РѕРґ.</th>
-                            <th style="width: 10%;">РєС–Р»-С‚СЊ</th>
-                            <th style="width: 10%;">Р¦С–РЅР° Р±РµР·<br>РџР”Р’<br>(РіСЂРЅ.)</th>
-                            <th style="width: 15%;">РЎСѓРјР° Р±РµР·<br>РџР”Р’<br>(РіСЂРЅ.)</th>
+                            <th style="width: 5%;">№</th>
+                            <th style="width: 55%;">Найменування робіт, послуг</th>
+                            <th style="width: 5%;">од.</th>
+                            <th style="width: 10%;">кіл-ть</th>
+                            <th style="width: 10%;">Ціна без<br>ПДВ<br>(грн.)</th>
+                            <th style="width: 15%;">Сума без<br>ПДВ<br>(грн.)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td class="text-left">РўСЂР°РЅСЃРїРѕСЂС‚РЅС– РїРѕСЃР»СѓРіРё РїРѕ РјР°СЂС€СЂСѓС‚Сѓ: <span class="val-route"></span></td>
-                            <td>РєРј</td>
+                            <td class="text-left">Транспортні послуги по маршруту: <span class="val-route"></span></td>
+                            <td>км</td>
                             <td><span class="val-km"></span></td>
                             <td><span class="val-price"></span></td>
                             <td><span class="val-sum"></span></td>
                         </tr>
                     </tbody>
                 </table>
-                <div class="totals">Р Р°Р·РѕРј <span class="val-sum"></span><br>РЎСѓРјР° РџР”Р’ 0,00<br>РЈСЃСЊРѕРіРѕ Р· РџР”Р’ <span class="val-sum"></span></div>
-                <div style="margin-bottom: 10px;">Р—Р°РіР°Р»СЊРЅР° РІР°СЂС‚С–СЃС‚СЊ СЂРѕР±С–С‚ (РїРѕСЃР»СѓРі) СЃРєР»Р°Р»Р° <span class="val-sum-words"></span> Р±РµР· РџР”Р’</div>
-                <div style="margin-bottom: 30px;">Р—Р°РјРѕРІРЅРёРє РїСЂРµС‚РµРЅР·С–Р№ РїРѕ РѕР±'С”РјСѓ, СЏРєРѕСЃС‚С– С‚Р° СЃС‚СЂРѕРєР°Рј РІРёРєРѕРЅР°РЅРЅСЏ СЂРѕР±С–С‚ (РЅР°РґР°РЅРЅСЏ РїРѕСЃР»СѓРі) РЅРµ РјР°С”</div>
+                <div class="totals">Разом <span class="val-sum"></span><br>Сума ПДВ 0,00<br>Усього з ПДВ <span class="val-sum"></span></div>
+                <div style="margin-bottom: 10px;">Загальна вартість робіт (послуг) склала <span class="val-sum-words"></span> без ПДВ</div>
+                <div style="margin-bottom: 30px;">Замовник претензій по об'єму, якості та строкам виконання робіт (надання послуг) не має</div>
                 
                 <div class="signatures">
                     <div class="sign-block">
-                        <div>Р’С–Рґ РІРёРєРѕРЅР°РІС†СЏ</div>
+                        <div>Від виконавця</div>
                         <hr>
                         <div class="sign-title val-carrier-shortname"></div>
                         <div class="sign-text val-carrier-req-act"></div>
                     </div>
                     
                     <div class="sign-block">
-                        <div>Р’С–Рґ Р·Р°РјРѕРІРЅРёРєР°</div>
+                        <div>Від замовника</div>
                         <hr>
-                        <div class="sign-title">РљРѕРїР°РЅРёС†СЏ Р†.Рћ.</div>
+                        <div class="sign-title">Копаниця І.О.</div>
                         <div class="sign-text">
-                            РўРѕРІР°СЂРёСЃС‚РІРѕ Р· РѕР±РјРµР¶РµРЅРѕСЋ РІС–РґРїРѕРІС–РґР°Р»СЊРЅС–СЃС‚СЋ<br>
-                            вЂњР¤Р†Р РњРђ Р•Р Р†Р”РћРќвЂќ, РјС–СЃС†РµР·РЅР°С…РѕРґР¶РµРЅРЅСЏ: 08467<br>
-                            <span style="white-space: nowrap;">РљРёС—РІСЃСЊРєР° РѕР±Р»Р°СЃС‚СЊ, РџРµСЂРµСЏСЃР»Р°РІ-РҐРјРµР»СЊРЅРёС†СЊРєРёР№ СЂР°Р№РѕРЅ,</span><br>
-                            СЃ. Р§РѕРїРёР»РєРё, РІСѓР». Р‘РѕРіРґР°РЅР° РҐРјРµР»СЊРЅРёС†СЊРєРѕРіРѕ, 35,<br>
-                            РљРѕРґ Р„Р”Р РџРћРЈ 43106699 Р /Р  UA603003350000000260082211692 РІ РђРў вЂњР Р°Р№С„С„Р°Р№Р·РµРЅ Р‘Р°РЅРє РђРІР°Р»СЊвЂќ Рј. РљРёС”РІР°, РњР¤Рћ 300335, Р†РЅРґРёРІС–РґСѓР°Р»СЊРЅРёР№ РїРѕРґР°С‚РєРѕРІРёР№ в„– 431066910170 С” РїР»Р°С‚РЅРёРєРѕРј РџР”Р’.
+                            Товариство з обмеженою відповідальністю<br>
+                            “ФІРМА ЕРІДОН”, місцезнаходження: 08467<br>
+                            <span style="white-space: nowrap;">Київська область, Переяслав-Хмельницький район,</span><br>
+                            с. Чопилки, вул. Богдана Хмельницького, 35,<br>
+                            Код ЄДРПОУ 43106699 Р/Р UA603003350000000260082211692 в АТ “Райффайзен Банк Аваль” м. Києва, МФО 300335, Індивідуальний податковий № 431066910170 є платником ПДВ.
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- РЎРўРћР Р†РќРљРђ 2: РђРљРў (РљРѕРїС–СЏ 2) -->
+            <!-- СТОРІНКА 2: АКТ (Копія 2) -->
             <div class="document page-break" id="act-two" hidden>
                 <div class="doc-header">
-                    РђРљРў РЅР°РґР°РЅРЅСЏ РїРѕСЃР»СѓРі в„– <span class="val-doc-num"></span> РІС–Рґ <span class="val-doc-date"></span>
+                    АКТ надання послуг № <span class="val-doc-num"></span> від <span class="val-doc-date"></span>
                 </div>
                 <div class="preamble">
-                    РњРё, С‰Рѕ РЅРёР¶С‡Рµ РїС–РґРїРёСЃР°Р»РёСЃСЏ, РїСЂРµРґСЃС‚Р°РІРЅРёРє Р—Р°РјРѕРІРЅРёРєР° РўРѕРІР°СЂРёСЃС‚РІРѕ Р· РѕР±РјРµР¶РµРЅРѕСЋ РІС–РґРїРѕРІС–РґР°Р»СЊРЅС–СЃС‚СЋ "Р¤С–СЂРјР° Р•СЂС–РґРѕРЅ", РІ РѕСЃРѕР±С– РґРёСЂРµРєС‚РѕСЂР° РљРѕРїР°РЅРёС†С– Р†РіРѕСЂСЏ РћР»РµРіРѕРІРёС‡Р°, Р· РѕРґРЅРѕРіРѕ Р±РѕРєСѓ, С– РїСЂРµРґСЃС‚Р°РІРЅРёРє "Р’РёРєРѕРЅР°РІС†СЏ" <span class="val-carrier-fullname"></span>, Р· С–РЅС€РѕРіРѕ Р±РѕРєСѓ, СЃРєР»Р°Р»Рё С†РµР№ Р°РєС‚ РїСЂРѕ С‚Рµ, С‰Рѕ РЅР° РїС–РґСЃС‚Р°РІС– РЅР°РІРµРґРµРЅРёС… РґРѕРєСѓРјРµРЅС‚С–РІ:
+                    Ми, що нижче підписалися, представник Замовника Товариство з обмеженою відповідальністю "Фірма Ерідон", в особі директора Копаниці Ігоря Олеговича, з одного боку, і представник "Виконавця" <span class="val-carrier-fullname"></span>, з іншого боку, склали цей акт про те, що на підставі наведених документів:
                 </div>
                 <div class="doc-meta">
-                    Р Р°С…СѓРЅРѕРє в„– <span class="val-doc-num"></span> РІС–Рґ <span class="val-doc-date"></span><br>
+                    Рахунок № <span class="val-doc-num"></span> від <span class="val-doc-date"></span><br>
                     <span class="val-contract"></span><br>
-                    РђРІС‚РѕРјРѕР±С–Р»СЊ <span class="val-car"></span>
+                    Автомобіль <span class="val-car"></span>
                 </div>
-                <div>Р’РёРєРѕРЅР°РІС†РµРј Р±СѓР»Рё РІРёРєРѕРЅР°РЅС– РЅР°СЃС‚СѓРїРЅС– РїРѕСЃР»СѓРіРё (РЅР°РґР°РЅС– С‚Р°РєС– РїРѕСЃР»СѓРіРё):</div>
+                <div>Виконавцем були виконані наступні послуги (надані такі послуги):</div>
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 5%;">в„–</th>
-                            <th style="width: 55%;">РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ СЂРѕР±С–С‚, РїРѕСЃР»СѓРі</th>
-                            <th style="width: 5%;">РѕРґ.</th>
-                            <th style="width: 10%;">РєС–Р»-С‚СЊ</th>
-                            <th style="width: 10%;">Р¦С–РЅР° Р±РµР·<br>РџР”Р’<br>(РіСЂРЅ.)</th>
-                            <th style="width: 15%;">РЎСѓРјР° Р±РµР·<br>РџР”Р’<br>(РіСЂРЅ.)</th>
+                            <th style="width: 5%;">№</th>
+                            <th style="width: 55%;">Найменування робіт, послуг</th>
+                            <th style="width: 5%;">од.</th>
+                            <th style="width: 10%;">кіл-ть</th>
+                            <th style="width: 10%;">Ціна без<br>ПДВ<br>(грн.)</th>
+                            <th style="width: 15%;">Сума без<br>ПДВ<br>(грн.)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td class="text-left">РўСЂР°РЅСЃРїРѕСЂС‚РЅС– РїРѕСЃР»СѓРіРё РїРѕ РјР°СЂС€СЂСѓС‚Сѓ: <span class="val-route"></span></td>
-                            <td>РєРј</td>
+                            <td class="text-left">Транспортні послуги по маршруту: <span class="val-route"></span></td>
+                            <td>км</td>
                             <td><span class="val-km"></span></td>
                             <td><span class="val-price"></span></td>
                             <td><span class="val-sum"></span></td>
                         </tr>
                     </tbody>
                 </table>
-                <div class="totals">Р Р°Р·РѕРј <span class="val-sum"></span><br>РЎСѓРјР° РџР”Р’ 0,00<br>РЈСЃСЊРѕРіРѕ Р· РџР”Р’ <span class="val-sum"></span></div>
-                <div style="margin-bottom: 10px;">Р—Р°РіР°Р»СЊРЅР° РІР°СЂС‚С–СЃС‚СЊ СЂРѕР±С–С‚ (РїРѕСЃР»СѓРі) СЃРєР»Р°Р»Р° <span class="val-sum-words"></span> Р±РµР· РџР”Р’</div>
-                <div style="margin-bottom: 30px;">Р—Р°РјРѕРІРЅРёРє РїСЂРµС‚РµРЅР·С–Р№ РїРѕ РѕР±'С”РјСѓ, СЏРєРѕСЃС‚С– С‚Р° СЃС‚СЂРѕРєР°Рј РІРёРєРѕРЅР°РЅРЅСЏ СЂРѕР±С–С‚ (РЅР°РґР°РЅРЅСЏ РїРѕСЃР»СѓРі) РЅРµ РјР°С”</div>
+                <div class="totals">Разом <span class="val-sum"></span><br>Сума ПДВ 0,00<br>Усього з ПДВ <span class="val-sum"></span></div>
+                <div style="margin-bottom: 10px;">Загальна вартість робіт (послуг) склала <span class="val-sum-words"></span> без ПДВ</div>
+                <div style="margin-bottom: 30px;">Замовник претензій по об'єму, якості та строкам виконання робіт (надання послуг) не має</div>
                 
                 <div class="signatures">
                     <div class="sign-block">
-                        <div>Р’С–Рґ РІРёРєРѕРЅР°РІС†СЏ</div>
+                        <div>Від виконавця</div>
                         <hr>
                         <div class="sign-title val-carrier-shortname"></div>
                         <div class="sign-text val-carrier-req-act"></div>
                     </div>
                     
                     <div class="sign-block">
-                        <div>Р’С–Рґ Р·Р°РјРѕРІРЅРёРєР°</div>
+                        <div>Від замовника</div>
                         <hr>
-                        <div class="sign-title">РљРѕРїР°РЅРёС†СЏ Р†.Рћ.</div>
+                        <div class="sign-title">Копаниця І.О.</div>
                         <div class="sign-text">
-                            РўРѕРІР°СЂРёСЃС‚РІРѕ Р· РѕР±РјРµР¶РµРЅРѕСЋ РІС–РґРїРѕРІС–РґР°Р»СЊРЅС–СЃС‚СЋ<br>
-                            вЂњР¤Р†Р РњРђ Р•Р Р†Р”РћРќвЂќ, РјС–СЃС†РµР·РЅР°С…РѕРґР¶РµРЅРЅСЏ: 08467<br>
-                            <span style="white-space: nowrap;">РљРёС—РІСЃСЊРєР° РѕР±Р»Р°СЃС‚СЊ, РџРµСЂРµСЏСЃР»Р°РІ-РҐРјРµР»СЊРЅРёС†СЊРєРёР№ СЂР°Р№РѕРЅ,</span><br>
-                            СЃ. Р§РѕРїРёР»РєРё, РІСѓР». Р‘РѕРіРґР°РЅР° РҐРјРµР»СЊРЅРёС†СЊРєРѕРіРѕ, 35,<br>
-                            РљРѕРґ Р„Р”Р РџРћРЈ 43106699 Р /Р  UA603003350000000260082211692 РІ РђРў вЂњР Р°Р№С„С„Р°Р№Р·РµРЅ Р‘Р°РЅРє РђРІР°Р»СЊвЂќ Рј. РљРёС”РІР°, РњР¤Рћ 300335, Р†РЅРґРёРІС–РґСѓР°Р»СЊРЅРёР№ РїРѕРґР°С‚РєРѕРІРёР№ в„– 431066910170 С” РїР»Р°С‚РЅРёРєРѕРј РџР”Р’.
+                            Товариство з обмеженою відповідальністю<br>
+                            “ФІРМА ЕРІДОН”, місцезнаходження: 08467<br>
+                            <span style="white-space: nowrap;">Київська область, Переяслав-Хмельницький район,</span><br>
+                            с. Чопилки, вул. Богдана Хмельницького, 35,<br>
+                            Код ЄДРПОУ 43106699 Р/Р UA603003350000000260082211692 в АТ “Райффайзен Банк Аваль” м. Києва, МФО 300335, Індивідуальний податковий № 431066910170 є платником ПДВ.
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- РЎРўРћР Р†РќРљРђ 3: Р РђРҐРЈРќРћРљ -->
+            <!-- СТОРІНКА 3: РАХУНОК -->
             <div class="document page-break" id="invoice" hidden>
                 <div class="invoice-header">
-                    Р Р°С…СѓРЅРѕРє в„–<span class="val-doc-num"></span> РІС–Рґ <span class="val-doc-date"></span>
+                    Рахунок №<span class="val-doc-num"></span> від <span class="val-doc-date"></span>
                 </div>
                 <div class="invoice-details">
-                    <div>Р’РёРєРѕРЅР°РІРµС†СЊ :</div>
+                    <div>Виконавець :</div>
                     <div class="sign-text val-carrier-req-inv"></div>
                     
-                    <div>РџР»Р°С‚РЅРёРє:</div>
+                    <div>Платник:</div>
                     <div class="sign-text">
-                        РўРѕРІР°СЂРёСЃС‚РІРѕ Р· РѕР±РјРµР¶РµРЅРѕСЋ РІС–РґРїРѕРІС–РґР°Р»СЊРЅС–СЃС‚СЋ<br>
-                        вЂњР¤Р†Р РњРђ Р•Р Р†Р”РћРќвЂќ, РјС–СЃС†РµР·РЅР°С…РѕРґР¶РµРЅРЅСЏ: 08467<br>
-                        <span style="white-space: nowrap;">РљРёС—РІСЃСЊРєР° РѕР±Р»Р°СЃС‚СЊ, РџРµСЂРµСЏСЃР»Р°РІ-РҐРјРµР»СЊРЅРёС†СЊРєРёР№ СЂР°Р№РѕРЅ,</span><br>
-                        СЃ. Р§РѕРїРёР»РєРё, РІСѓР». Р‘РѕРіРґР°РЅР° РҐРјРµР»СЊРЅРёС†СЊРєРѕРіРѕ, 35,<br>
-                        РљРѕРґ Р„Р”Р РџРћРЈ 43106699 Р /Р  UA603003350000000260082211692 РІ РђРў вЂњР Р°Р№С„С„Р°Р№Р·РµРЅ Р‘Р°РЅРє РђРІР°Р»СЊвЂќ Рј. РљРёС”РІР°, РњР¤Рћ 300335, Р†РЅРґРёРІС–РґСѓР°Р»СЊРЅРёР№ РїРѕРґР°С‚РєРѕРІРёР№ в„– 431066910170 С” РїР»Р°С‚РЅРёРєРѕРј РџР”Р’.
+                        Товариство з обмеженою відповідальністю<br>
+                        “ФІРМА ЕРІДОН”, місцезнаходження: 08467<br>
+                        <span style="white-space: nowrap;">Київська область, Переяслав-Хмельницький район,</span><br>
+                        с. Чопилки, вул. Богдана Хмельницького, 35,<br>
+                        Код ЄДРПОУ 43106699 Р/Р UA603003350000000260082211692 в АТ “Райффайзен Банк Аваль” м. Києва, МФО 300335, Індивідуальний податковий № 431066910170 є платником ПДВ.
                     </div>
                 </div>
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 5%;">в„–</th>
-                            <th style="width: 55%;">РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ СЂРѕР±С–С‚, РїРѕСЃР»СѓРі</th>
-                            <th style="width: 5%;">РѕРґ.</th>
-                            <th style="width: 10%;">РєС–Р»-С‚СЊ</th>
-                            <th style="width: 10%;">Р¦С–РЅР° Р±РµР·<br>РџР”Р’<br>(РіСЂРЅ.)</th>
-                            <th style="width: 15%;">РЎСѓРјР° Р±РµР·<br>РџР”Р’<br>(РіСЂРЅ.)</th>
+                            <th style="width: 5%;">№</th>
+                            <th style="width: 55%;">Найменування робіт, послуг</th>
+                            <th style="width: 5%;">од.</th>
+                            <th style="width: 10%;">кіл-ть</th>
+                            <th style="width: 10%;">Ціна без<br>ПДВ<br>(грн.)</th>
+                            <th style="width: 15%;">Сума без<br>ПДВ<br>(грн.)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td class="text-left">РўСЂР°РЅСЃРїРѕСЂС‚РЅС– РїРѕСЃР»СѓРіРё РїРѕ РјР°СЂС€СЂСѓС‚Сѓ: <span class="val-route"></span></td>
-                            <td>РєРј</td>
+                            <td class="text-left">Транспортні послуги по маршруту: <span class="val-route"></span></td>
+                            <td>км</td>
                             <td><span class="val-km"></span></td>
                             <td><span class="val-price"></span></td>
                             <td><span class="val-sum"></span></td>
                         </tr>
                     </tbody>
                 </table>
-                <div class="totals">Р Р°Р·РѕРј <span class="val-sum"></span><br>РЎСѓРјР° РџР”Р’ 0,00<br>РЈСЃСЊРѕРіРѕ Р· РџР”Р’ <span class="val-sum"></span></div>
-                <div style="margin-bottom: 40px;">Р—Р°РіР°Р»СЊРЅР° РІР°СЂС‚С–СЃС‚СЊ СЂРѕР±С–С‚ (РїРѕСЃР»СѓРі) СЃРєР»Р°Р»Р° <span class="val-sum-words"></span> Р±РµР· РџР”Р’</div>
+                <div class="totals">Разом <span class="val-sum"></span><br>Сума ПДВ 0,00<br>Усього з ПДВ <span class="val-sum"></span></div>
+                <div style="margin-bottom: 40px;">Загальна вартість робіт (послуг) склала <span class="val-sum-words"></span> без ПДВ</div>
                 <div class="invoice-signature"><span style="display:inline-block; border-bottom: 1px solid black; width: 250px; margin-right: 10px;"></span> <span class="val-carrier-shortname"></span></div>
             </div>
                 </div>
@@ -504,7 +504,7 @@
     </div>
 
     <script>
-        // --- РљРћРќР¤Р†Р“РЈР РђР¦Р†РЇ FIREBASE ---
+        // --- КОНФІГУРАЦІЯ FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyDKMMyRyf8ZRxW0cE-c5vN4RhGn3V_h__E",
             authDomain: "grusha-7af5b.firebaseapp.com",
@@ -526,35 +526,35 @@
         let isSaving = false;
         let manualWords = null;
 
-        // --- Р”РђРќР† РџР•Р Р•Р’Р†Р—РќРРљР†Р’ ---
+        // --- ДАНІ ПЕРЕВІЗНИКІВ ---
         const carriersData = {
             'gurzhii': {
-                fullName: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р° РїС–РґРїСЂРёС”РјРµС†СЊ Р“СѓСЂР¶С–Р№ Р’С–С‚Р°Р»С–Р№ Р’Р°СЃРёР»СЊРѕРІРёС‡',
-                shortName: 'Р“СѓСЂР¶С–Р№ Р’С–С‚Р°Р»С–Р№ Р’Р°СЃРёР»СЊРѕРІРёС‡',
-                contract: 'Р”РѕРіРѕРІС–СЂ в„– 12/01/2026/3 РІС–Рґ 12.01.2026',
+                fullName: 'Фізична особа підприємець Гуржій Віталій Васильович',
+                shortName: 'Гуржій Віталій Васильович',
+                contract: 'Договір № 12/01/2026/3 від 12.01.2026',
                 car: 'Mercedes-Benz CA6731HP',
-                reqAct: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р°-РїС–РґРїСЂРёС”РјРµС†СЊ Р“СѓСЂР¶С–Р№ Р’С–С‚Р°Р»С–Р№<br>Р’Р°СЃРёР»СЊРѕРІРёС‡, РђРґСЂРµСЃР°: 19845, Р§РµСЂРєР°СЃСЊРєР° РѕР±Р».,<br>Р”СЂР°Р±С–РІСЃСЊРєРёР№ СЂ-РЅ, СЃ. Р‘С–Р»РѕСѓСЃС–РІРєР°, РІСѓР».<br>РҐРјРµР»СЊРЅРёС†СЊРєРѕРіРѕ, 28<br>Р†РґРµРЅС‚РёС„С–РєР°С†С–Р№РЅРёР№ РєРѕРґ 2596312873, СЂ/СЂ<br>UA273052990000026001041609871 РІ РђРў РљР‘<br>В«РџСЂРёРІР°С‚Р±Р°РЅРєВ» Рј. Р§РµСЂРєР°СЃРё,<br>РњР¤Рћ 305299, РЎРІ-РІРѕ РЎРµСЂС–СЏ Р‘ в„– 147556 С”<br>РїР»Р°С‚РЅРёРєРѕРј С”РґРёРЅРѕРіРѕ РїРѕРґР°С‚РєСѓ',
-                reqInv: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р°-РїС–РґРїСЂРёС”РјРµС†СЊ Р“СѓСЂР¶С–Р№ Р’С–С‚Р°Р»С–Р№ Р’Р°СЃРёР»СЊРѕРІРёС‡, РђРґСЂРµСЃР°: 19845, Р§РµСЂРєР°СЃСЊРєР° РѕР±Р».,<br>Р”СЂР°Р±С–РІСЃСЊРєРёР№ СЂ-РЅ, СЃ. Р‘С–Р»РѕСѓСЃС–РІРєР°, РІСѓР». РҐРјРµР»СЊРЅРёС†СЊРєРѕРіРѕ, 28<br>Р†РґРµРЅС‚РёС„С–РєР°С†С–Р№РЅРёР№ РєРѕРґ 2596312873, СЂ/СЂ UA273052990000026001041609871 РІ РђРў РљР‘<br>В«РџСЂРёРІР°С‚Р±Р°РЅРєВ» Рј. Р§РµСЂРєР°СЃРё,<br>РњР¤Рћ 305299, РЎРІ-РІРѕ РЎРµСЂС–СЏ Р‘ в„– 147556 С” РїР»Р°С‚РЅРёРєРѕРј С”РґРёРЅРѕРіРѕ РїРѕРґР°С‚РєСѓ'
+                reqAct: 'Фізична особа-підприємець Гуржій Віталій<br>Васильович, Адреса: 19845, Черкаська обл.,<br>Драбівський р-н, с. Білоусівка, вул.<br>Хмельницького, 28<br>Ідентифікаційний код 2596312873, р/р<br>UA273052990000026001041609871 в АТ КБ<br>«Приватбанк» м. Черкаси,<br>МФО 305299, Св-во Серія Б № 147556 є<br>платником єдиного податку',
+                reqInv: 'Фізична особа-підприємець Гуржій Віталій Васильович, Адреса: 19845, Черкаська обл.,<br>Драбівський р-н, с. Білоусівка, вул. Хмельницького, 28<br>Ідентифікаційний код 2596312873, р/р UA273052990000026001041609871 в АТ КБ<br>«Приватбанк» м. Черкаси,<br>МФО 305299, Св-во Серія Б № 147556 є платником єдиного податку'
             },
             'fedorov': {
-                fullName: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р° РїС–РґРїСЂРёС”РјРµС†СЊ Р¤РµРґРѕСЂРѕРІ РЎС‚Р°РЅС–СЃР»Р°РІ РђРЅР°С‚РѕР»С–Р№РѕРІРёС‡',
-                shortName: 'Р¤РµРґРѕСЂРѕРІ РЎС‚Р°РЅС–СЃР»Р°РІ РђРЅР°С‚РѕР»С–Р№РѕРІРёС‡',
-                contract: 'Р”РѕРіРѕРІС–СЂ в„– 12/01/2026/2 РІС–Рґ 12.01.2025',
+                fullName: 'Фізична особа підприємець Федоров Станіслав Анатолійович',
+                shortName: 'Федоров Станіслав Анатолійович',
+                contract: 'Договір № 12/01/2026/2 від 12.01.2025',
                 car: 'Mercedes-Benz CA6627IM',
-                reqAct: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р°-РїС–РґРїСЂРёС”РјРµС†СЊ Р¤РµРґРѕСЂРѕРІ РЎС‚Р°РЅС–СЃР»Р°РІ<br>РђРЅР°С‚РѕР»С–Р№РѕРІРёС‡<br>Р РќРћРљРџРџ 2473302011,С‚РµР» 0972978285 Р°РґСЂРµСЃР°:<br>РЈРєСЂР°С—РЅР°, 18029, Р§РµСЂРєР°СЃСЊРєР° РѕР±Р»., РјС–СЃС‚Рѕ Р§РµСЂРєР°СЃРё, РІСѓР».<br>Р“РµРЅРµСЂР°Р»Р° РџСѓС‚РµР№РєР°, Р±СѓРґРёРЅРѕРє 54, РєРІР°СЂС‚РёСЂР° 60,<br>Р /СЂ UA693052990000026003031603788 РІ РђРў РљР‘<br>"РџСЂРёРІР°С‚Р±Р°РЅРє" РњР¤Рћ 305299, РЎРІС–РґРѕС†С‚РІРѕ РїР»Р°С‚РЅРёРєР°<br>С”РґРёРЅРѕРіРѕ РїРѕРґР°С‚РєСѓ РЎРµСЂС–СЏ Р‘ в„– 160134',
-                reqInv: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р°-РїС–РґРїСЂРёС”РјРµС†СЊ Р¤РµРґРѕСЂРѕРІ РЎС‚Р°РЅС–СЃР»Р°РІ РђРЅР°С‚РѕР»С–Р№РѕРІРёС‡<br>Р РќРћРљРџРџ 2473302011,С‚РµР» 0972978285 Р°РґСЂРµСЃР°: РЈРєСЂР°С—РЅР°, 18029, Р§РµСЂРєР°СЃСЊРєР° РѕР±Р»., РјС–СЃС‚Рѕ Р§РµСЂРєР°СЃРё,<br>РІСѓР». Р“РµРЅРµСЂР°Р»Р° РџСѓС‚РµР№РєР°, Р±СѓРґРёРЅРѕРє 54, РєРІР°СЂС‚РёСЂР° 60,<br>Р /СЂ UA693052990000026003031603788 РІ РђРў РљР‘ "РџСЂРёРІР°С‚Р±Р°РЅРє" РњР¤Рћ 305299, РЎРІС–РґРѕС†С‚РІРѕ<br>РїР»Р°С‚РЅРёРєР° С”РґРёРЅРѕРіРѕ РїРѕРґР°С‚РєСѓ РЎРµСЂС–СЏ Р‘ в„– 160134'
+                reqAct: 'Фізична особа-підприємець Федоров Станіслав<br>Анатолійович<br>РНОКПП 2473302011,тел 0972978285 адреса:<br>Україна, 18029, Черкаська обл., місто Черкаси, вул.<br>Генерала Путейка, будинок 54, квартира 60,<br>Р/р UA693052990000026003031603788 в АТ КБ<br>"Приватбанк" МФО 305299, Свідоцтво платника<br>єдиного податку Серія Б № 160134',
+                reqInv: 'Фізична особа-підприємець Федоров Станіслав Анатолійович<br>РНОКПП 2473302011,тел 0972978285 адреса: Україна, 18029, Черкаська обл., місто Черкаси,<br>вул. Генерала Путейка, будинок 54, квартира 60,<br>Р/р UA693052990000026003031603788 в АТ КБ "Приватбанк" МФО 305299, Свідоцтво<br>платника єдиного податку Серія Б № 160134'
             },
             'muzhanovskyi': {
-                fullName: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р° РїС–РґРїСЂРёС”РјРµС†СЊ РњСѓР¶Р°РЅРѕРІСЃСЊРєРёР№ Р’Р°Р»РµРЅС‚РёРЅ Р›РµРѕРЅРіС–РЅРѕРІРёС‡',
-                shortName: 'РњСѓР¶Р°РЅРѕРІСЃСЊРєРёР№ Р’Р°Р»РµРЅС‚РёРЅ Р›РµРѕРЅРіС–РЅРѕРІРёС‡',
-                contract: 'Р”РѕРіРѕРІС–СЂ в„– 15/01/2026 РІС–Рґ 15.01.2026',
+                fullName: 'Фізична особа підприємець Мужановський Валентин Леонгінович',
+                shortName: 'Мужановський Валентин Леонгінович',
+                contract: 'Договір № 15/01/2026 від 15.01.2026',
                 car: 'Renault Premium 420 CA6250IH',
-                reqAct: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р°-РїС–РґРїСЂРёС”РјРµС†СЊ РњСѓР¶Р°РЅРѕРІСЃСЊРєРёР№<br>Р’Р°Р»РµРЅС‚РёРЅ Р›РµРѕРЅРіС–РЅРѕРІРёС‡ РђРґСЂРµСЃР°: 18000, Р§РµСЂРєР°СЃСЊРєР°<br>РѕР±Р»., Рј. Р§РµСЂРєР°СЃРё, РІСѓР». Р СѓСЃС‚Р°РІС–, Р±СѓРґ. 11, РєРІ. 64,<br>Р„Р”Р РџРћРЈ 2878206950, IBAN<br>UA533220010000026005320051438 РђРў<br>"РЈРќР†Р’Р•Р РЎРђР› Р‘РђРќРљ", РўРµР». 0678926170 Р„РґРёРЅРёР№<br>РїРѕРґР°С‚РѕРє',
-                reqInv: 'Р¤С–Р·РёС‡РЅР° РѕСЃРѕР±Р°-РїС–РґРїСЂРёС”РјРµС†СЊ РњСѓР¶Р°РЅРѕРІСЃСЊРєРёР№ Р’Р°Р»РµРЅС‚РёРЅ Р›РµРѕРЅРіС–РЅРѕРІРёС‡ РђРґСЂРµСЃР°: 18000, Р§РµСЂРєР°СЃСЊРєР°<br>РѕР±Р»., Рј. Р§РµСЂРєР°СЃРё, РІСѓР». Р СѓСЃС‚Р°РІС–, Р±СѓРґ. 11, РєРІ. 64, Р„Р”Р РџРћРЈ 2878206950, IBAN<br>UA533220010000026005320051438 РђРў "РЈРќР†Р’Р•Р РЎРђР› Р‘РђРќРљ", РўРµР». 0678926170 Р„РґРёРЅРёР№<br>РїРѕРґР°С‚РѕРє'
+                reqAct: 'Фізична особа-підприємець Мужановський<br>Валентин Леонгінович Адреса: 18000, Черкаська<br>обл., м. Черкаси, вул. Руставі, буд. 11, кв. 64,<br>ЄДРПОУ 2878206950, IBAN<br>UA533220010000026005320051438 АТ<br>"УНІВЕРСАЛ БАНК", Тел. 0678926170 Єдиний<br>податок',
+                reqInv: 'Фізична особа-підприємець Мужановський Валентин Леонгінович Адреса: 18000, Черкаська<br>обл., м. Черкаси, вул. Руставі, буд. 11, кв. 64, ЄДРПОУ 2878206950, IBAN<br>UA533220010000026005320051438 АТ "УНІВЕРСАЛ БАНК", Тел. 0678926170 Єдиний<br>податок'
             }
         };
 
-        // --- РЎРРќРҐР РћРќР†Р—РђР¦Р†РЇ Р— FIREBASE ---
+        // --- СИНХРОНІЗАЦІЯ З FIREBASE ---
         function setArchiveStatus(state, message) {
             archiveState = state;
             const status = document.getElementById('fb_status');
@@ -565,7 +565,7 @@
 
         function connectArchive() {
             if (!db) {
-                setArchiveStatus("error", "Firestore РЅРµРґРѕСЃС‚СѓРїРЅРёР№");
+                setArchiveStatus("error", "Firestore недоступний");
                 renderSavedList();
                 return;
             }
@@ -574,7 +574,7 @@
                 const fromCache = snapshot.metadata.fromCache;
                 const previousNumber = getNextDocumentNumber();
                 setArchiveStatus(fromCache ? "offline" : "ready",
-                    fromCache ? "РћС‡С–РєСѓРІР°РЅРЅСЏ Р·РІвЂ™СЏР·РєСѓ Р· Firestore" : "Firestore РїС–РґРєР»СЋС‡РµРЅРѕ");
+                    fromCache ? "Очікування зв’язку з Firestore" : "Firestore підключено");
                 allTripsFromCloud = snapshot.docs.map(doc => ({ ...doc.data(), fbId: doc.id }));
                 updateRouteSuggestions();
                 updateCarSuggestions();
@@ -586,8 +586,8 @@
                 }
                 renderSavedList();
             }, error => {
-                console.error("РџРѕРјРёР»РєР° РїС–РґРєР»СЋС‡РµРЅРЅСЏ РґРѕ Firebase:", error);
-                setArchiveStatus("error", "РђСЂС…С–РІ РЅРµРґРѕСЃС‚СѓРїРЅРёР№");
+                console.error("Помилка підключення до Firebase:", error);
+                setArchiveStatus("error", "Архів недоступний");
                 renderSavedList();
             });
         }
@@ -623,7 +623,7 @@
             allTripsFromCloud.forEach(record => {
                 if (record.car && record.car.trim() !== "") {
                     let rawCar = record.car.trim();
-                    if (rawCar.toLowerCase().startsWith('Р°РІС‚РѕРјРѕР±С–Р»СЊ ')) {
+                    if (rawCar.toLowerCase().startsWith('автомобіль ')) {
                         rawCar = rawCar.substring(11).trim();
                     }
                     allCars.add(rawCar);
@@ -673,9 +673,9 @@
                 const empty = document.createElement('p');
                 empty.className = 'empty-archive';
                 if (archiveState === "ready") {
-                    empty.textContent = query ? "Р—Р° РІР°С€РёРј Р·Р°РїРёС‚РѕРј РЅС–С‡РѕРіРѕ РЅРµ Р·РЅР°Р№РґРµРЅРѕ." : "Р”Р»СЏ С†СЊРѕРіРѕ РїРµСЂРµРІС–Р·РЅРёРєР° С‰Рµ РЅРµРјР°С” СЂРµР№СЃС–РІ.";
+                    empty.textContent = query ? "За вашим запитом нічого не знайдено." : "Для цього перевізника ще немає рейсів.";
                 } else {
-                    empty.textContent = archiveState === "error" ? "РќРµ РІРґР°Р»РѕСЃСЏ Р·Р°РІР°РЅС‚Р°Р¶РёС‚Рё СЂРµР№СЃРё." : "РћС‡С–РєСѓС”РјРѕ РЅР° РґР°РЅС– Р· Firestore.";
+                    empty.textContent = archiveState === "error" ? "Не вдалося завантажити рейси." : "Очікуємо на дані з Firestore.";
                 }
                 container.append(empty);
                 return;
@@ -696,11 +696,11 @@
                 };
 
                 const sum = (Number(record.km || 0) * Number(record.price || 0)).toFixed(2).replace('.', ',');
-                const route = (record.routePoints || []).join(' в†’ ');
+                const route = (record.routePoints || []).join(' → ');
                 const details = [
-                    ['item-title', 'в„– ' + (record.docNum || 'Р±РµР· РЅРѕРјРµСЂР°')],
+                    ['item-title', '№ ' + (record.docNum || 'без номера')],
                     ['item-trip', record.tripNum],
-                    ['item-meta', [formatDate(record.docDate), sum + ' РіСЂРЅ'].filter(Boolean).join(' В· ')],
+                    ['item-meta', [formatDate(record.docDate), sum + ' грн'].filter(Boolean).join(' · ')],
                     ['item-route', route]
                 ];
                 for (const [className, value] of details) {
@@ -715,8 +715,8 @@
                 const remove = document.createElement('button');
                 remove.type = 'button';
                 remove.className = 'btn-delete-item';
-                remove.textContent = 'Г—';
-                remove.setAttribute('aria-label', 'Р’РёРґР°Р»РёС‚Рё СЂРµР№СЃ в„– ' + (record.docNum || 'Р±РµР· РЅРѕРјРµСЂР°'));
+                remove.textContent = '×';
+                remove.setAttribute('aria-label', 'Видалити рейс № ' + (record.docNum || 'без номера'));
                 remove.disabled = archiveState !== "ready";
                 remove.onclick = () => deleteRecord(record.fbId);
                 item.append(open, remove);
@@ -738,14 +738,14 @@
             const recordId = currentRecordFbId;
 
             if (!docNum) {
-                showSaveStatus("Р’РІРµРґС–С‚СЊ РЅРѕРјРµСЂ Р°РєС‚Р° Р№ СЂР°С…СѓРЅРєСѓ.", "error");
+                showSaveStatus("Введіть номер акта й рахунку.", "error");
                 numberInput.focus();
                 return;
             }
 
             if (allTripsFromCloud.some(record => record.carrier === carrier &&
                 record.docNum === docNum && record.fbId !== recordId)) {
-                showSaveStatus("РўР°РєРёР№ РЅРѕРјРµСЂ СѓР¶Рµ С” РІ Р°СЂС…С–РІС– С†СЊРѕРіРѕ РїРµСЂРµРІС–Р·РЅРёРєР°.", "error");
+                showSaveStatus("Такий номер уже є в архіві цього перевізника.", "error");
                 numberInput.focus();
                 return;
             }
@@ -755,7 +755,7 @@
                 docNum,
                 tripNum: document.getElementById('trip_num').value.trim(),
                 docDate: document.getElementById('doc_date').value,
-                car: document.getElementById('car_input').value.trim().replace(/^Р°РІС‚РѕРјРѕР±С–Р»СЊ\s+/i, ''),
+                car: document.getElementById('car_input').value.trim().replace(/^автомобіль\s+/i, ''),
                 km: Number(document.getElementById('km').value) || 0,
                 price: Number(document.getElementById('price').value) || 0,
                 routePoints: Array.from(document.querySelectorAll('.route-point'), input => input.value.trim()).filter(Boolean),
@@ -771,7 +771,7 @@
             button.disabled = true;
             newButton.disabled = true;
             fields.forEach(field => { field.disabled = true; });
-            showSaveStatus("Р—Р±РµСЂРµР¶РµРЅРЅСЏ Сѓ FirestoreвЂ¦");
+            showSaveStatus("Збереження у Firestore…");
 
             try {
                 const trips = db.collection("trips");
@@ -781,12 +781,12 @@
                     const ref = await trips.add({ ...tripData, createdAt: timestamp() });
                     currentRecordFbId = ref.id;
                 }
-                document.getElementById('editor-title').textContent = "Р РµРґР°РіСѓРІР°РЅРЅСЏ СЂРµР№СЃСѓ";
-                showSaveStatus("Р РµР№СЃ Р·Р±РµСЂРµР¶РµРЅРѕ РІ Р°СЂС…С–РІС–.", "ready");
+                document.getElementById('editor-title').textContent = "Редагування рейсу";
+                showSaveStatus("Рейс збережено в архіві.", "ready");
                 renderSavedList();
             } catch (error) {
-                console.error("РџРѕРјРёР»РєР° Р·Р±РµСЂРµР¶РµРЅРЅСЏ:", error);
-                showSaveStatus("РќРµ РІРґР°Р»РѕСЃСЏ Р·Р±РµСЂРµРіС‚Рё СЂРµР№СЃ. РЎРїСЂРѕР±СѓР№С‚Рµ С‰Рµ СЂР°Р·.", "error");
+                console.error("Помилка збереження:", error);
+                showSaveStatus("Не вдалося зберегти рейс. Спробуйте ще раз.", "error");
             } finally {
                 isSaving = false;
                 button.disabled = archiveState !== "ready";
@@ -808,13 +808,13 @@
                 currentRecordFbId = record.fbId;
                 manualWords = typeof record.sumWords === 'string' ? record.sumWords : null;
                 showSaveStatus();
-                document.getElementById('editor-title').textContent = "Р РµРґР°РіСѓРІР°РЅРЅСЏ СЂРµР№СЃСѓ";
+                document.getElementById('editor-title').textContent = "Редагування рейсу";
                 document.getElementById('doc_num').value = record.docNum || "";
                 document.getElementById('trip_num').value = record.tripNum || "";
                 document.getElementById('doc_date').value = record.docDate || "";
                 
                 let loadedCar = record.car || carriersData[record.carrier || 'gurzhii'].car || "";
-                if (loadedCar.toLowerCase().startsWith('Р°РІС‚РѕРјРѕР±С–Р»СЊ ')) {
+                if (loadedCar.toLowerCase().startsWith('автомобіль ')) {
                     loadedCar = loadedCar.substring(11).trim();
                 }
                 document.getElementById('car_input').value = loadedCar;
@@ -859,7 +859,7 @@
             currentRecordFbId = null;
             manualWords = null;
             showSaveStatus();
-            document.getElementById('editor-title').textContent = "РќРѕРІРёР№ СЂРµР№СЃ";
+            document.getElementById('editor-title').textContent = "Новий рейс";
             const carrierKey = document.getElementById('carrier_select').value;
             const numberInput = document.getElementById('doc_num');
             delete numberInput.dataset.edited;
@@ -881,13 +881,13 @@
 
         function deleteRecord(fbId) {
             if (isSaving || archiveState !== "ready") return;
-            if(confirm("Р’Рё РґС–Р№СЃРЅРѕ С…РѕС‡РµС‚Рµ РІРёРґР°Р»РёС‚Рё С†РµР№ Р·Р°РїРёСЃ С–Р· С…РјР°СЂРЅРѕРіРѕ Р°СЂС…С–РІСѓ РЅР°Р·Р°РІР¶РґРё?")) {
+            if(confirm("Ви дійсно хочете видалити цей запис із хмарного архіву назавжди?")) {
                 db.collection("trips").doc(fbId).delete().then(() => {
                     if (currentRecordFbId === fbId) {
                         currentRecordFbId = null;
                         createNewRecord();
                     }
-                }).catch(err => alert("РџРѕРјРёР»РєР° РІРёРґР°Р»РµРЅРЅСЏ: " + err));
+                }).catch(err => alert("Помилка видалення: " + err));
             }
         }
 
@@ -899,7 +899,7 @@
             });
 
             if (points.length < 2) {
-                alert("Р”Р»СЏ РїСЂРѕРєР»Р°РґР°РЅРЅСЏ РјР°СЂС€СЂСѓС‚Сѓ РїРѕС‚СЂС–Р±РЅРѕ РјС–РЅС–РјСѓРј 2 С‚РѕС‡РєРё!");
+                alert("Для прокладання маршруту потрібно мінімум 2 точки!");
                 return;
             }
 
@@ -907,7 +907,7 @@
             window.open(url, '_blank', 'noopener,noreferrer');
         }
 
-        // --- Р”РћРџРћРњР†Р–РќР† Р¤РЈРќРљР¦Р†Р‡ Р”Р›РЇ Р Р•РќР”Р•Р РЈ ---
+        // --- ДОПОМІЖНІ ФУНКЦІЇ ДЛЯ РЕНДЕРУ ---
 
         function addRoutePoint(value = "", moveFocus = false) {
             const container = document.getElementById('route_inputs');
@@ -918,15 +918,15 @@
             input.type = 'text';
             input.className = 'route-point';
             input.setAttribute('list', 'route_suggestions');
-            input.placeholder = 'РњС–СЃС‚Рѕ, РІСѓР»РёС†СЏ, РЅРѕРјРµСЂ Р±СѓРґРёРЅРєСѓ';
+            input.placeholder = 'Місто, вулиця, номер будинку';
             input.value = value;
             input.oninput = updateDoc;
             
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'btn-remove';
-            btn.title = 'Р’РёРґР°Р»РёС‚Рё С‚РѕС‡РєСѓ';
-            btn.textContent = 'Г—';
+            btn.title = 'Видалити точку';
+            btn.textContent = '×';
             btn.onclick = function() { removeRoutePoint(btn); };
             
             row.appendChild(input);
@@ -938,8 +938,8 @@
 
         function labelRoutePoints() {
             document.querySelectorAll('.route-row').forEach((row, index) => {
-                row.querySelector('input').setAttribute('aria-label', 'РўРѕС‡РєР° РјР°СЂС€СЂСѓС‚Сѓ ' + (index + 1));
-                row.querySelector('button').setAttribute('aria-label', 'Р’РёРґР°Р»РёС‚Рё С‚РѕС‡РєСѓ ' + (index + 1));
+                row.querySelector('input').setAttribute('aria-label', 'Точка маршруту ' + (index + 1));
+                row.querySelector('button').setAttribute('aria-label', 'Видалити точку ' + (index + 1));
             });
         }
 
@@ -953,7 +953,7 @@
                 nextRow.querySelector('input').focus();
                 updateDoc();
             } else {
-                alert("РњР°С” Р±СѓС‚Рё С…РѕС‡Р° Р± РѕРґРЅР° С‚РѕС‡РєР° РјР°СЂС€СЂСѓС‚Сѓ!");
+                alert("Має бути хоча б одна точка маршруту!");
             }
         }
 
@@ -972,10 +972,10 @@
         }
 
         function numberToWordsUa(number, isFemaleCurrency = true) {
-            const units = ['', 'РѕРґРёРЅ', 'РґРІР°', 'С‚СЂРё', 'С‡РѕС‚РёСЂРё', 'Рї\'СЏС‚СЊ', 'С€С–СЃС‚СЊ', 'СЃС–Рј', 'РІС–СЃС–Рј', 'РґРµРІ\'СЏС‚СЊ', 'РґРµСЃСЏС‚СЊ', 'РѕРґРёРЅР°РґС†СЏС‚СЊ', 'РґРІР°РЅР°РґС†СЏС‚СЊ', 'С‚СЂРёРЅР°РґС†СЏС‚СЊ', 'С‡РѕС‚РёСЂРЅР°РґС†СЏС‚СЊ', 'Рї\'СЏС‚РЅР°РґС†СЏС‚СЊ', 'С€С–СЃС‚РЅР°РґС†СЏС‚СЊ', 'СЃС–РјРЅР°РґС†СЏС‚СЊ', 'РІС–СЃС–РјРЅР°РґС†СЏС‚СЊ', 'РґРµРІ\'СЏС‚РЅР°РґС†СЏС‚СЊ'];
-            const unitsFemale = ['', 'РѕРґРЅР°', 'РґРІС–', 'С‚СЂРё', 'С‡РѕС‚РёСЂРё', 'Рї\'СЏС‚СЊ', 'С€С–СЃС‚СЊ', 'СЃС–Рј', 'РІС–СЃС–Рј', 'РґРµРІ\'СЏС‚СЊ'];
-            const tens = ['', '', 'РґРІР°РґС†СЏС‚СЊ', 'С‚СЂРёРґС†СЏС‚СЊ', 'СЃРѕСЂРѕРє', 'Рї\'СЏС‚РґРµСЃСЏС‚', 'С€С–СЃС‚РґРµСЃСЏС‚', 'СЃС–РјРґРµСЃСЏС‚', 'РІС–СЃС–РјРґРµСЃСЏС‚', 'РґРµРІ\'СЏРЅРѕСЃС‚Рѕ'];
-            const hundreds = ['', 'СЃС‚Рѕ', 'РґРІС–СЃС‚С–', 'С‚СЂРёСЃС‚Р°', 'С‡РѕС‚РёСЂРёСЃС‚Р°', 'Рї\'СЏС‚СЃРѕС‚', 'С€С–СЃС‚СЃРѕС‚', 'СЃС–РјСЃРѕС‚', 'РІС–СЃС–РјСЃРѕС‚', 'РґРµРІ\'СЏС‚СЃРѕС‚'];
+            const units = ['', 'один', 'два', 'три', 'чотири', 'п\'ять', 'шість', 'сім', 'вісім', 'дев\'ять', 'десять', 'одинадцять', 'дванадцять', 'тринадцять', 'чотирнадцять', 'п\'ятнадцять', 'шістнадцять', 'сімнадцять', 'вісімнадцять', 'дев\'ятнадцять'];
+            const unitsFemale = ['', 'одна', 'дві', 'три', 'чотири', 'п\'ять', 'шість', 'сім', 'вісім', 'дев\'ять'];
+            const tens = ['', '', 'двадцять', 'тридцять', 'сорок', 'п\'ятдесят', 'шістдесят', 'сімдесят', 'вісімдесят', 'дев\'яносто'];
+            const hundreds = ['', 'сто', 'двісті', 'триста', 'чотириста', 'п\'ятсот', 'шістсот', 'сімсот', 'вісімсот', 'дев\'ятсот'];
             if (number === 0 || isNaN(number)) return '';
 
             function getGroupWords(num, isFemale) {
@@ -993,20 +993,20 @@
             if (m > 0) {
                 result.push(getGroupWords(m, false));
                 let remM = m % 10; let remM100 = m % 100;
-                if (remM100 >= 11 && remM100 <= 14) result.push('РјС–Р»СЊР№РѕРЅС–РІ');
-                else if (remM === 1) result.push('РјС–Р»СЊР№РѕРЅ');
-                else if (remM >= 2 && remM <= 4) result.push('РјС–Р»СЊР№РѕРЅРё');
-                else result.push('РјС–Р»СЊР№РѕРЅС–РІ');
+                if (remM100 >= 11 && remM100 <= 14) result.push('мільйонів');
+                else if (remM === 1) result.push('мільйон');
+                else if (remM >= 2 && remM <= 4) result.push('мільйони');
+                else result.push('мільйонів');
                 intPart %= 1000000;
             }
             let th = Math.floor(intPart / 1000);
             if (th > 0) {
                 result.push(getGroupWords(th, true));
                 let remTh = th % 10; let remTh100 = th % 100;
-                if (remTh100 >= 11 && remTh100 <= 14) result.push('С‚РёСЃСЏС‡');
-                else if (remTh === 1) result.push('С‚РёСЃСЏС‡Р°');
-                else if (remTh >= 2 && remTh <= 4) result.push('С‚РёСЃСЏС‡С–');
-                else result.push('С‚РёСЃСЏС‡');
+                if (remTh100 >= 11 && remTh100 <= 14) result.push('тисяч');
+                else if (remTh === 1) result.push('тисяча');
+                else if (remTh >= 2 && remTh <= 4) result.push('тисячі');
+                else result.push('тисяч');
                 intPart %= 1000;
             }
             if (intPart > 0 || result.length === 0) { 
@@ -1024,12 +1024,12 @@
             if(centsStr.length === 1) centsStr += '0';
             
             let words = numberToWordsUa(intPart, true); 
-            let currency = 'РіСЂРёРІРµРЅСЊ';
+            let currency = 'гривень';
             let rem100 = intPart % 100; let rem10 = intPart % 10;
-            if (rem100 >= 11 && rem100 <= 14) currency = 'РіСЂРёРІРµРЅСЊ';
-            else if (rem10 === 1) currency = 'РіСЂРёРІРЅСЏ';
-            else if (rem10 >= 2 && rem10 <= 4) currency = 'РіСЂРёРІРЅС–';
-            return `${words} ${currency} ${centsStr} РєРѕРї.`;
+            if (rem100 >= 11 && rem100 <= 14) currency = 'гривень';
+            else if (rem10 === 1) currency = 'гривня';
+            else if (rem10 >= 2 && rem10 <= 4) currency = 'гривні';
+            return `${words} ${currency} ${centsStr} коп.`;
         }
 
         function updateDocManualWords() {
@@ -1042,7 +1042,7 @@
             const docDate = formatDate(document.getElementById('doc_date').value);
             
             let carText = document.getElementById('car_input').value.trim();
-            if (carText.toLowerCase().startsWith('Р°РІС‚РѕРјРѕР±С–Р»СЊ ')) {
+            if (carText.toLowerCase().startsWith('автомобіль ')) {
                 carText = carText.substring(11).trim();
             }
             
@@ -1063,7 +1063,7 @@
 
             const priceStr = priceText ? price.toFixed(2).replace('.', ',') : "";
             const sumStr = (kmText || priceText) ? sum.toFixed(2).replace('.', ',') : "";
-            document.getElementById('total-display').value = (sumStr || '0,00') + '\u00a0РіСЂРЅ';
+            document.getElementById('total-display').value = (sumStr || '0,00') + '\u00a0грн';
 
             setElementsText('val-doc-num', docNum);
             setElementsText('val-doc-date', docDate);
@@ -1116,7 +1116,7 @@
         document.querySelector('.editor-fields').addEventListener('input', () => showSaveStatus());
 
         createNewRecord();
-        setArchiveStatus("loading", "РџС–РґРєР»СЋС‡РµРЅРЅСЏ РґРѕ Firestore");
+        setArchiveStatus("loading", "Підключення до Firestore");
         connectArchive();
     </script>
 </body>
